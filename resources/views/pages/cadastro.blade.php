@@ -23,7 +23,7 @@
         <div class="auth-pages-form-content">
             <div class="auth-pages-form-content-input-group">
                 <label for="nome-cadastro">Nome</label>
-                <input type="text" name="nome-cadastro-input" id="nome-cadastro">
+                <input type="text" name="nome-cadastro-input" id="nome-cadastro" autofocus>
             </div>
             <div class="auth-pages-form-content-input-group">
                 <label for="email-cadastro">Email</label>

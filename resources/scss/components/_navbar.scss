@@ -94,3 +94,13 @@
         width: 100%;
     }
 }
+
+@keyframes eyeActive {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}

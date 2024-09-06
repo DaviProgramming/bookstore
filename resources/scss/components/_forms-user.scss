@@ -36,6 +36,11 @@
                 gap: 5px;
                 font-size: 20px;
                 color: $branco;
+
+
+                &.disabled{
+                    display: none;
+                }
             }
 
             input{
@@ -70,6 +75,8 @@
 
                     &.active{
                         display: flex;
+                        animation: eyeActive 0.2s;
+
                     }
                 }
             }
