@@ -1,0 +1,11 @@
+.auth-pages{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+
+    @import "../components/forms-user";
+
+    
+}

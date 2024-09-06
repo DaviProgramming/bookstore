@@ -1,0 +1,103 @@
+&-form{
+    width: 600px;
+    height: 600px;
+    background: $preto;
+    border-radius: 6px;
+    padding: $default-padding-items;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    &-title{
+        align-self: center;
+        font-size: 38px;
+        font-weight: 700;
+        margin-bottom: 30px;
+    }
+
+    &-content{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+        &-input-group{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            color: $preto;
+            
+            label{
+                position: absolute;
+                top: 10px;
+                left: 10px;
+                font-weight: 300;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 5px;
+                font-size: 20px;
+                color: $branco;
+            }
+
+            input{
+                border: none;
+                box-shadow: 0 1px 1px ;
+                outline: none;
+                border-radius: 6px;
+                height: 50px;
+                background: transparent;
+                padding: 10px;
+                border: 1px solid $branco;
+                color: $branco;
+                font-weight: 300;
+                font-size: 20px;
+
+            }
+
+            &-eyes{
+                position: absolute;
+                top: 17px;
+                right: 10px;
+                color: $branco;
+                
+                i, svg{
+                    display: none;
+                    cursor: pointer;
+                    
+                    &:hover{
+                        background: $rosa;
+                        border-radius: 50%;
+                    }
+
+                    &.active{
+                        display: flex;
+                    }
+                }
+            }
+        }
+    }
+
+    &-redirect{
+        margin-top: 15px;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        a:last-child{
+
+            align-self: end;
+            color: $branco;
+        }
+    }
+
+
+    button{
+        margin-top: 30px;
+        height: 50px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 24px;
+        background: $rosa;
+        border: none;
+        color: $branco;
+        font-size: $font-primaria;
+    }
+}

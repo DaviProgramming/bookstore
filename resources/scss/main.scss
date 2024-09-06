@@ -1,0 +1,28 @@
+
+@import "./abstract/colors";
+@import "./abstract/fonts";
+@import "./abstract/variables";
+
+@import "./components/navbar";
+
+
+@import "./pages/login-cadastro";
+
+*{
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    transition: 0.2s;
+}
+
+body{
+    background: $cinza;
+    font-family: $font-primaria;
+    color: $branco;
+    min-height: 100vh;
+}
+
+.container-fluid{
+    padding: $default-padding-container;
+    
+}
