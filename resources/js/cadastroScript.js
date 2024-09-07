@@ -1,7 +1,6 @@
 
 
 const listeners = () => {
-
     
     let inputsForm = document.querySelectorAll('.auth-pages-form-content-input-group input');
 
@@ -18,6 +17,12 @@ const listeners = () => {
             input.addEventListener('blur', (e) => {
 
                 inputsActions.blurInput(e.target);
+
+            })
+
+            input.addEventListener('keyup', (e) => {
+
+                inputsActions.digitando(e.target);
 
             })
 
@@ -59,7 +64,6 @@ const listeners = () => {
     }
 
 
-
     let buttonCadastrar = document.querySelector('button[name="button-cadastro"]');
 
 
@@ -71,6 +75,23 @@ const listeners = () => {
 }
 
 const inputsActions = {
+
+    digitando(input){
+
+        let divContainer = input.parentNode;
+        let label = divContainer.querySelector('label');
+
+        if(input.value.length <= 0){
+
+            labelActions.ativaLabel(label);
+
+        }else{
+
+            labelActions.desativaLabel(label);
+
+        }
+
+    },
 
     blurInput(input){
 
@@ -105,6 +126,7 @@ const inputsActions = {
 
 
 const labelActions = {
+    
 
     clickLabel(label){
 
@@ -152,14 +174,17 @@ const eyesActions = {
 
     clicked(eye){
 
-        this.removeActived();
+        this.removeActived(eye);
         this.addActive(eye);
 
     },
 
-    removeActived(){
+    removeActived(eye){
 
-        let eyeAtivado = document.querySelectorAll('.auth-pages-form-content-input-group-eyes i.active');
+        let divContainer = eye.parentNode;
+
+        let eyeAtivado = divContainer.querySelectorAll('i.active');
+
 
         eyeAtivado.forEach(eye => {
 
@@ -180,14 +205,22 @@ const eyesActions = {
 
         let eyeAtivar = null;
 
+        let divContainer = eye.parentNode;
+
         if(eye.classList.contains('fa-eye')){
 
-            eyeAtivar = document.querySelector('.auth-pages-form-content-input-group-eyes i.fa-eye-slash');
+            eyeAtivar = divContainer.querySelector('i.fa-eye-slash');
+            
+            let input = divContainer.parentNode.querySelector('input');
+            input.type = 'password'
 
 
         }else if(eye.classList.contains('fa-eye-slash')){
 
-            eyeAtivar = document.querySelector('.auth-pages-form-content-input-group-eyes i.fa-eye');
+            eyeAtivar = divContainer.querySelector('i.fa-eye');
+
+            let input = divContainer.parentNode.querySelector('input');
+            input.type = 'text'
 
         }
 

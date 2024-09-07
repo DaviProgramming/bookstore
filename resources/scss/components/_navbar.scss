@@ -10,6 +10,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
+    border-bottom: 1px solid $azul;
     z-index: 5;
 
     &-logo {
@@ -20,6 +21,7 @@
         color: $branco;
         span {
             text-transform: uppercase;
+            color: $azul;
         }
     }
 
@@ -35,7 +37,6 @@
 
                 a{
                     font-weight: 600;
-
                 }
             }
 
@@ -52,11 +53,11 @@
 
             &.active:hover {
                 a {
-                    color: $rosa;
+                    color: $azul;
                 }
 
                 &.active::before {
-                    background: $rosa;
+                    background: $azul;
                 }
             }
 

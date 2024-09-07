@@ -31,14 +31,18 @@
             </div>
             <div class="auth-pages-form-content-input-group">
                 <label for="senha-cadastro">Senha</label>
-                <input type="text" name="senha-cadastro-input" id="senha-cadastro">
+                <input type="password" name="senha-cadastro-input" id="senha-cadastro">
+                <div class="auth-pages-form-content-input-group-eyes">
+                    <i class="fa-solid fa-eye"></i>
+                    <i class="fa-solid fa-eye-slash active"></i>
+                </div>
             </div>
             <div class="auth-pages-form-content-input-group">
                 <label for="confirmar-senha-cadastro">Confirmar Senha</label>
-                <input type="text" name="confirmar-senha-cadastro-input" id="confirmar-senha-cadastro">
+                <input type="password" name="confirmar-senha-cadastro-input" id="confirmar-senha-cadastro">
                 <div class="auth-pages-form-content-input-group-eyes">
-                    <i class="fa-solid fa-eye active"></i>
-                    <i class="fa-solid fa-eye-slash "></i>
+                    <i class="fa-solid fa-eye"></i>
+                    <i class="fa-solid fa-eye-slash active"></i>
                 </div>
             </div>
         </div>
