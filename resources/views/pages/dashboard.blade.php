@@ -29,11 +29,15 @@
 @include('./components/aside')
 
 
-<section class="container-fluid auth-pages">
+<section class="container-fluid dashboard">
 
     @if ($page == 'inicio')
 
     @include('./components/dashboard/inicio')
+
+    @elseif($page == 'novo-livro')
+
+    @include('./components/dashboard/adicionar-livro')
         
     @endif
 

@@ -1,0 +1,12 @@
+
+.dashboard{
+
+    padding: 130px 60px 0px 320px!important;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @import "../components/dashboard/forms-book";
+}
+
+@import "../components/dashboard-container";

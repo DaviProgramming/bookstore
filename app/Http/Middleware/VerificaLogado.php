@@ -31,9 +31,11 @@ class VerificaLogado
 
                 $newToken = JWTAuth::refresh(JWTAuth::getToken());
                 
-                $user = JWTAuth::setToken($newToken)->toUser();
+                JWTAuth::setToken($newToken)->toUser();
                 
                 session(['jwt_token' => $newToken]);
+
+                return $next($request);
                 
             } catch (JWTException $refreshException) {
                 // Se não for possível fazer o refresh do token, redireciona para o login
