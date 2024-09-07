@@ -51,7 +51,7 @@
                 height: 50px;
                 background: transparent;
                 padding: 10px;
-                border: 1px solid $branco;
+                border: 2px solid $branco;
                 color: $branco;
                 font-weight: 300;
                 font-size: 20px;
@@ -105,6 +105,48 @@
         background: $azul;
         border: none;
         color: $branco;
-        font-size: $font-primaria;
+        font-family: $font-primaria;
+        position: relative;
+
+        span{
+            position: relative;
+            z-index: 4;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        &:hover::before{
+
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: $azul-2;
+            z-index: 4;
+            border-radius: 6px;
+            animation: buttonHover 0.1s;
+
+        }
+
+        &:active{
+            scale: 1.1;
+        }
     }
+}
+
+
+@keyframes buttonHover {
+
+    from{
+
+        width: 0%;
+
+    }
+
+    to{
+        width: 100%;
+    }
+    
 }
