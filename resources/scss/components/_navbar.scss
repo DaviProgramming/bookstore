@@ -83,6 +83,31 @@
                 color: $branco;
                 font-weight: 400;
             }
+
+
+            .dropdown {
+
+                .navbar-custom-items-item:hover::before{
+                    background: transparent;
+                }
+
+                button{
+                    background:transparent;
+                    border: none;
+
+                }
+
+                &-menu{
+                    margin-top: 10px;
+                    background: $preto;
+                    border: 1px solid $azul;
+                }
+
+                .dropdown-item:hover{
+                    background: $preto;
+                    color: $azul;
+                }
+            }
         }
     }
 }

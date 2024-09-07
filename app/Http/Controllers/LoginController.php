@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\User;
@@ -14,7 +15,9 @@ class LoginController extends Controller
 {
     public function index(){
 
-        return view('pages.login');
+        $page = 'login';
+
+        return view('pages.login')->with(['page' => $page]);
 
     }
 
@@ -70,6 +73,30 @@ class LoginController extends Controller
     public function logout(Request $request){
 
 
+    }
+
+
+    public function refresh(Request $request){
+
+        try {
+            // Obtém o token da sessão
+            $token = session('jwt_token');
+
+            // Verifica e gera um novo token
+            $newToken = JWTAuth::setToken($token)->refresh();
+
+            // Atualiza o token na sessão
+            session(['jwt_token' => $newToken]);
+
+            
+
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+
+            return response()->json(['status' => 'error', 'message' => 'Não foi possível atualizar o token.'], 401);
+
+        }
     }
 
 

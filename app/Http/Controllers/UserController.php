@@ -19,7 +19,9 @@ class UserController extends Controller
 {
     public function create(){
 
-        return view('pages.cadastro');
+        $page = 'cadastro';
+
+        return view('pages.cadastro')->with(['page' => $page]);
 
     }
 

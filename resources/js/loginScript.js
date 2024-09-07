@@ -356,7 +356,7 @@ const formActions = {
 
                 setTimeout(() => {
 
-                    window.location.href = '/dashboard';
+                    window.location.href = '/dashboard/inicio';
 
                     loadingActions.disableLoading();
 

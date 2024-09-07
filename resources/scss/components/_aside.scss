@@ -1,0 +1,59 @@
+aside{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 270px;
+    height: 100vh;
+    background: $preto;
+    border-right: 1px solid $azul;
+
+    .aside-container{
+        padding:  110px 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+        &-header{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            &-icon{
+                height: 50px;
+                width: 50px;
+                background: $azul;
+                color: $branco;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 800;
+                font-size: 32px;
+                align-self: center;
+            }
+        }
+
+        &-body{
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+
+            &-item{
+                background: $azul;
+                width: 100%;
+                color: $preto;
+                padding: 15px;
+                border-radius: 3px;
+                color: $branco;
+                font-weight: 600;
+                text-decoration: none;
+                text-align: center;
+
+
+                &:hover{
+                    background: $ciano;
+                }
+            }
+        }
+    }
+}

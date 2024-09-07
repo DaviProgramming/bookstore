@@ -1,5 +1,17 @@
-@extends('./template')
+@php
 
+    if(empty($page)){
+
+        $url = "/dashboard/inicio";
+        header("Location: $url");
+        exit();
+
+    }
+
+
+@endphp
+
+@extends('./template')
 
 @section('pagina', 'Dashboard')
 
@@ -14,12 +26,16 @@
 
 
 @include('./components/nav')
+@include('./components/aside')
 
 
 <section class="container-fluid auth-pages">
 
-    Dashboard
+    @if ($page == 'inicio')
 
+    @include('./components/dashboard/inicio')
+        
+    @endif
 
 
 </section>
