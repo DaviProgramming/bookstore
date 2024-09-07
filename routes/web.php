@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LoginController;
 
 use App\Http\Middleware\VerificaLogado;
 
@@ -13,3 +14,4 @@ Route::get('/cadastro', [UserController::class, 'create'])->middleware(VerificaL
 
 
 Route::post('/evento/cadastro', [UserController::class, 'store'])->middleware(VerificaLogado::class)->name('evento.cria-usuario');
+Route::post('/evento/login', [LoginController::class, 'login'])->middleware(VerificaLogado::class)->name('evento.login');
