@@ -18,7 +18,7 @@ class UserController extends Controller
         return view('pages.cadastro');
 
     }
-    
+
     public function store(Request $request){
 
         $valida = Validator::make($request->all(), [
@@ -29,7 +29,9 @@ class UserController extends Controller
 
         if ($valida->fails()) {
 
-            return response()->json(['status' => 'error' , 'message' => 'dados invalidos'], 404); // se a validacao falhar, retorno um erro
+            // se o verificador falha, retorno o erro
+
+            return response()->json(['status' => 'error' , 'message' => 'dados invalídos'], 404); // se a validacao falhar, retorno um erro
 
         }
 

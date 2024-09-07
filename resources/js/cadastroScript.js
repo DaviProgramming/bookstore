@@ -1,3 +1,9 @@
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
 const listeners = () => {
     let inputsForm = document.querySelectorAll(
         ".auth-pages-form-content-input-group input"
@@ -184,7 +190,7 @@ const validations = {
         }
 
         // Se não houver erros, retorna true
-        if (erro.length === 0) {
+        if (erro == null) {
             return { valido: true, mensagem: "Senha válida." };
         } else {
             // Se houver erros, retorna false e a lista de erros

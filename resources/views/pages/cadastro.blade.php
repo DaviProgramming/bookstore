@@ -4,7 +4,7 @@
 @section('pagina', 'cadastro')
 
 @section('head-content')
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/scss/main.scss', 'resources/js/cadastroScript.js'])
 
 @endsection
