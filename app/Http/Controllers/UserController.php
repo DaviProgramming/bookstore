@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
+
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 use App\Models\User;
 
@@ -57,20 +61,34 @@ class UserController extends Controller
         $user = User::create(['email' => $request->email, 'name' => $name, 'password' => hash::make($password)]);
 
         if ($user) {
+            // Gera um token JWT para o usuário recém-criado
+            $token = JWTAuth::attempt($request->only('email', 'password'));
+    
+            if ($token) {
 
+                session(['jwt_token' => $token]);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Usuário criado!',
+                    'token' => $token // Retorna o token JWT
+                ], 201); // Código de status 201 para recurso criado
+
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Usuário criado, mas falha ao gerar o token. Tente novamente.'
+                ], 500); // Código de status 500 para erro interno do servidor
+            }
+        } else {
             return response()->json([
-                'message' => 'Usuário criado com sucesso.',
-                'status' => 'success'
-            ], 201); 
-        }else{
+                'status' => 'error',
+                'message' => 'Não foi possível criar o usuário'
+            ], 500); // Código de status 500 para erro interno do servidor
+        }
 
-            return response()->json([
-                'message' => 'Não foi possivel criar o usuário',
-                'status' => 'error'
-            ], 404);
 
-        } 
-
+        
 
         
 

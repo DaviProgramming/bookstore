@@ -59,6 +59,7 @@ const listeners = () => {
 };
 
 const inputsActions = {
+
     digitando(input) {
         let divContainer = input.parentNode;
         let label = divContainer.querySelector("label");
@@ -269,9 +270,6 @@ const formActions = {
 
         let spanErrorPassword = document.querySelector('.auth-pages-form-content-input-error.password');
 
-      
-
-
         return {inputEmail, inputSenha, spanErrorEmail, spanErrorPassword };
 
 
@@ -324,29 +322,30 @@ const formActions = {
         if (this.verifyInputs(inputEmail,inputSenha,spanErrorEmail,spanErrorPassword,)) {
 
             loadingActions.activeLoading();
-            this.trySignUp(inputName, inputEmail.value, inputSenha.value);
+            this.trySignUp(inputEmail.value.toLowerCase(), inputSenha.value);
 
 
         }
     },
 
-    trySignUp(name,email,senha){
+    trySignUp(email,senha){
 
 
         let formData = new FormData();
 
-        formData.append('name', name);
         formData.append('email', email);
         formData.append('password', senha);
 
         $.ajax({
 
             type:"POST",
-            url:"/evento/cadastro",
+            url:"/evento/login",
             data:formData,
             processData: false, 
             contentType: false, 
             success: (response) => {
+
+                console.log(response);
 
                 swal.fire({
                     icon:'success',
@@ -357,7 +356,7 @@ const formActions = {
 
                 setTimeout(() => {
 
-                    window.location.href = '/';
+                    window.location.href = '/dashboard';
 
                     loadingActions.disableLoading();
 
@@ -365,6 +364,8 @@ const formActions = {
 
             },
             error: (xhr, status ,error) => {
+
+                console.log(xhr.responseJSON.message);
 
                 swal.fire({
                     title: xhr.responseJSON.message,

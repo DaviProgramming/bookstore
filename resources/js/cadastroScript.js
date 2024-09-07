@@ -368,7 +368,7 @@ const formActions = {
         if (this.verifyInputs(inputName,inputEmail,inputSenha,inputConfirmSenha, spanErrorName, spanErrorEmail,spanErrorPassword, spanErrorConfirmPassword)) {
 
             loadingActions.activeLoading();
-            this.trySignUp(inputName, inputEmail.value, inputSenha.value);
+            this.trySignUp(inputName.value, inputEmail.value.toLowerCase(), inputSenha.value);
 
 
         }
@@ -394,7 +394,7 @@ const formActions = {
 
                 swal.fire({
                     icon:'success',
-                    title:response.message,
+                    title: response.token,
                     showConfirmButton: false,
                     timer: 1500,
                 })
@@ -409,6 +409,9 @@ const formActions = {
 
             },
             error: (xhr, status ,error) => {
+
+                console.log(xhr.responseJSON.message);
+                console.log(error);
 
                 swal.fire({
                     title: xhr.responseJSON.message,
