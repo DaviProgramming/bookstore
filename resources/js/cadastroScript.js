@@ -45,7 +45,9 @@ const listeners = () => {
         'button[name="button-cadastro"]'
     );
 
-    buttonCadastrar.addEventListener("click", (e) => {});
+    buttonCadastrar.addEventListener("click", (e) => {
+        formActions.clickedButton(e.target);
+    });
 };
 
 const inputsActions = {
@@ -143,7 +145,6 @@ const eyesActions = {
 
 const validations = {
     name(name) {
-
         //regex que valida o nome fornecido:
         let nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]{2,50}$/;
 
@@ -154,9 +155,9 @@ const validations = {
     },
 
     email(email) {
-
-        //regex que verifica o email fornecido: 
-        let emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        //regex que verifica o email fornecido:
+        let emailRegex =
+            /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
         //retorna se é valido ou n
         let isValid = emailRegex.test(email);
@@ -165,7 +166,6 @@ const validations = {
     },
 
     password(password) {
-
         let erro = null;
 
         // Verifica o comprimento mínimo (por exemplo, 8 caracteres)
@@ -190,7 +190,8 @@ const validations = {
 
         // Verifica se contém pelo menos um caractere especial
         if (!/[\W_]/.test(password)) {
-            erro = "A senha deve conter pelo menos um caractere especial (ex: !@#$%).";
+            erro =
+                "A senha deve conter pelo menos um caractere especial (ex: !@#$%).";
         }
 
         // Se não houver erros, retorna true
@@ -201,8 +202,153 @@ const validations = {
             return { valido: false, mensagem: erro };
         }
     },
+    confirmPassword(senha, confirmaSenha) {
+
+
+        if (senha == confirmaSenha) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+    },
 };
 
-const formActions = {};
+const spanErrosActions = {
+
+    activeSpan(span, message){
+
+        if(!span.classList.contains('active')){
+            span.classList.add('active');
+        }
+
+        if(message != null){
+
+
+            let spanText = span.querySelector('span');
+
+            spanText.innerHTML = message;
+
+
+        }
+
+    },
+
+    disableSpan(span){
+
+        if(span.classList.contains('active')){
+            span.classList.remove('active');
+        }
+
+    }
+
+}
+
+const formActions = {
+
+    getInputsAndSpans() {
+
+        let inputName = document.querySelector(
+            'input[name="nome-cadastro-input"]'
+        );
+
+        let spanErrorName = document.querySelector('.auth-pages-form-content-input-error.name');
+
+        let inputEmail = document.querySelector(
+            'input[name="email-cadastro-input"]'
+        );
+
+        let spanErrorEmail = document.querySelector('.auth-pages-form-content-input-error.email');
+
+        let inputSenha = document.querySelector(
+            'input[name="senha-cadastro-input"]'
+        );
+
+        let spanErrorPassword = document.querySelector('.auth-pages-form-content-input-error.password');
+
+        let inputConfirmSenha = document.querySelector(
+            'input[name="confirmar-senha-cadastro-input"]'
+        );
+
+        let spanErrorConfirmPassword = document.querySelector('.auth-pages-form-content-input-error.confirm-password');
+
+
+        return {inputName, inputEmail, inputSenha, inputConfirmSenha, spanErrorName, spanErrorEmail, spanErrorPassword, spanErrorConfirmPassword };
+
+
+    },
+
+    verifyInputs(nameInput, emailInput, senhaInput, confirmaSenhaInput, spanErrorName, spanErrorEmail, spanErrorPassword, spanErrorConfirmPassword) {
+
+        let erro = 0;
+
+        if (validations.name(nameInput.value) != true) {
+            erro++;
+
+            spanErrosActions.activeSpan(spanErrorName);
+
+        }else{
+
+            spanErrosActions.disableSpan(spanErrorName);
+
+        }
+
+        if (validations.email(emailInput.value) != true) {
+            erro++;
+
+            spanErrosActions.activeSpan(spanErrorEmail);
+
+        }else{
+
+            spanErrosActions.disableSpan(spanErrorEmail);
+
+        }
+
+        if (validations.password(senhaInput.value).valido != true) {
+            erro++;
+
+            spanErrosActions.activeSpan(spanErrorPassword, validations.password(senhaInput.value).mensagem);
+
+        }else{
+
+            spanErrosActions.disableSpan(spanErrorPassword);
+
+        }
+
+        if (validations.confirmPassword(senhaInput.value, confirmaSenhaInput.value) != true) {
+            erro++;
+            spanErrosActions.activeSpan(spanErrorConfirmPassword);
+        }else{
+
+            spanErrosActions.disableSpan(spanErrorConfirmPassword);
+
+        }
+
+
+        if(erro === 0){
+
+            return true;
+
+        }else {
+
+            return false;
+
+        }
+    },
+
+    clickedButton(button) {
+
+        let { inputName, inputEmail, inputSenha, inputConfirmSenha, spanErrorName, spanErrorEmail, spanErrorPassword, spanErrorConfirmPassword } = this.getInputsAndSpans();
+
+        if (this.verifyInputs(inputName,inputEmail,inputSenha,inputConfirmSenha, spanErrorName, spanErrorEmail,spanErrorPassword, spanErrorConfirmPassword)) {
+
+
+
+        }
+    },
+};
 
 listeners();

@@ -1,6 +1,6 @@
 &-form{
     width: 600px;
-    height: 600px;
+    min-height: 600px;
     background: $preto;
     border-radius: 6px;
     padding: $default-padding-items;
@@ -79,6 +79,22 @@
 
                     }
                 }
+            }
+        }
+
+        &-input-error{
+            background: $vermelho;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+
+            &.active{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                gap: 5px;
             }
         }
     }
