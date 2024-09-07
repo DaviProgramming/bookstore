@@ -25,12 +25,12 @@
                 <label for="nome-cadastro">Nome</label>
                 <input type="text" name="nome-cadastro-input" id="nome-cadastro" autofocus>
             </div>
-            <span class="auth-pages-form-content-input-error name"><i class="fa-solid fa-circle-exclamation"></i> <span>Nome invalido</span></span>
+            <span class="auth-pages-form-content-input-error name"><i class="fa-solid fa-circle-exclamation"></i> <span>Nome inválido</span></span>
             <div class="auth-pages-form-content-input-group">
                 <label for="email-cadastro">Email</label>
                 <input type="email" name="email-cadastro-input" id="email-cadastro">
             </div>
-            <span class="auth-pages-form-content-input-error email"><i class="fa-solid fa-circle-exclamation"></i> <span>Email invalido</span></span>
+            <span class="auth-pages-form-content-input-error email"><i class="fa-solid fa-circle-exclamation"></i> <span>Email inválido</span></span>
 
             <div class="auth-pages-form-content-input-group">
                 <label for="senha-cadastro">Senha</label>
@@ -40,7 +40,7 @@
                     <i class="fa-solid fa-eye-slash active"></i>
                 </div>
             </div>
-            <span class="auth-pages-form-content-input-error password"><i class="fa-solid fa-circle-exclamation"></i> <span>Senha invalida</span></span>
+            <span class="auth-pages-form-content-input-error password"><i class="fa-solid fa-circle-exclamation"></i> <span>Senha inválida</span></span>
 
             <div class="auth-pages-form-content-input-group">
                 <label for="confirmar-senha-cadastro">Confirmar Senha</label>
@@ -61,6 +61,8 @@
 
 
 </section>
+
+@include('./components/loader-page')
 
 
 @endsection

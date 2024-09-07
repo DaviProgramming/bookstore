@@ -2,8 +2,10 @@
 @import "./abstract/colors";
 @import "./abstract/fonts";
 @import "./abstract/variables";
+@import "./abstract/keyframes";
 
 @import "./components/navbar";
+@import "./components/loader-page";
 
 
 @import "./pages/login-cadastro";

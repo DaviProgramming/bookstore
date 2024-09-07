@@ -1,0 +1,44 @@
+@keyframes buttonHover {
+
+    from{
+
+        width: 0%;
+
+    }
+
+    to{
+        width: 100%;
+    }
+    
+}
+
+@keyframes hoverAnimationNavbarHref {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes eyeActive {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}
+
+
+@keyframes spanErrorAnimation {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}

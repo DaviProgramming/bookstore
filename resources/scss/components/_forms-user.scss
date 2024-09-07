@@ -1,12 +1,13 @@
 &-form{
     width: 600px;
-    min-height: 600px;
+    min-height: 700px;
     background: $preto;
     border-radius: 6px;
     padding: $default-padding-items;
     display: flex;
     flex-direction: column;
     justify-content: center;
+
     &-title{
         align-self: center;
         font-size: 38px;
@@ -95,6 +96,7 @@
                 flex-direction: row;
                 align-items: center;
                 gap: 5px;
+                animation: spanErrorAnimation 0.4s ease;
             }
         }
     }
@@ -153,16 +155,4 @@
 }
 
 
-@keyframes buttonHover {
 
-    from{
-
-        width: 0%;
-
-    }
-
-    to{
-        width: 100%;
-    }
-    
-}

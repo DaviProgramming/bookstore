@@ -169,8 +169,8 @@ const validations = {
         let erro = null;
 
         // Verifica o comprimento mínimo (por exemplo, 8 caracteres)
-        if (password.length < 8) {
-            erro = "A senha deve ter pelo menos 8 caracteres.";
+        if (password.length < 5) {
+            erro = "A senha deve ter pelo menos 5 caracteres.";
         }
 
         // Verifica se contém pelo menos uma letra maiúscula
@@ -183,17 +183,6 @@ const validations = {
             erro = "A senha deve conter pelo menos uma letra minúscula.";
         }
 
-        // Verifica se contém pelo menos um número
-        if (!/[0-9]/.test(password)) {
-            erro = "A senha deve conter pelo menos um número.";
-        }
-
-        // Verifica se contém pelo menos um caractere especial
-        if (!/[\W_]/.test(password)) {
-            erro =
-                "A senha deve conter pelo menos um caractere especial (ex: !@#$%).";
-        }
-
         // Se não houver erros, retorna true
         if (erro.length === 0) {
             return { valido: true, mensagem: "Senha válida." };
@@ -204,7 +193,6 @@ const validations = {
     },
     confirmPassword(senha, confirmaSenha) {
 
-
         if (senha == confirmaSenha) {
 
             return true;
@@ -214,6 +202,7 @@ const validations = {
             return false;
 
         }
+
     },
 };
 
@@ -243,6 +232,33 @@ const spanErrosActions = {
             span.classList.remove('active');
         }
 
+    }
+
+}
+
+const loadingActions = {
+
+    activeLoading(){
+
+        let loader = document.querySelector('.loader-page');
+
+        if(!loader.classList.contains('active')){
+
+            loader.classList.add('active');
+
+        }
+
+    },
+
+    disableLoading(){
+
+        let loader = document.querySelector('.loader-page');
+
+        if(loader.classList.contains('active')){
+
+            loader.classList.remove('active');
+
+        }
     }
 
 }
@@ -345,10 +361,68 @@ const formActions = {
 
         if (this.verifyInputs(inputName,inputEmail,inputSenha,inputConfirmSenha, spanErrorName, spanErrorEmail,spanErrorPassword, spanErrorConfirmPassword)) {
 
+            loadingActions.activeLoading();
+            this.trySignUp(inputName, inputEmail.value, inputSenha.value);
 
 
         }
     },
+
+    trySignUp(name,email,senha){
+
+
+        let formData = new FormData();
+
+        formData.append('name', name);
+        formData.append('email', email);
+        formData.append('password', senha);
+
+        $.ajax({
+
+            type:"POST",
+            url:"/evento/cadastro",
+            data:formData,
+            processData: false, 
+            contentType: false, 
+            success: (response) => {
+
+                swal.fire({
+                    icon:'success',
+                    title:response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    window.location.href = '/';
+
+                    loadingActions.disableLoading();
+
+                }, 1500)
+
+            },
+            error: (xhr, status ,error) => {
+
+                swal.fire({
+                    title: xhr.responseJSON.message,
+                    showConfirmButton: false,
+                    icon: 'error',
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+
+
+                }, 1500)
+
+            }
+            
+        })
+
+    }
 };
 
 listeners();
