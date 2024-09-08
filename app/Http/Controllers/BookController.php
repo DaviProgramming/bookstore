@@ -10,15 +10,18 @@ use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\Book;
 use App\Repositories\BookRepositoryInterface;
+use App\Services\BookService;
 use Exception;
 
 class BookController extends Controller
 {
 
     protected $bookRepository;
+    protected $bookService;
 
-    public function __construct(BookRepositoryInterface $bookRepository)
+    public function __construct(BookRepositoryInterface $bookRepository, BookService $bookService)
     {
+        $this->bookService = $bookService;
         $this->bookRepository = $bookRepository;
     }
 
@@ -32,6 +35,8 @@ class BookController extends Controller
             $user = JWTAuth::setToken($token)->authenticate();
             $all_books = Book::all();
             $favorited_books = $user->favoritedBooks->pluck('id');
+
+
         } catch (JWTException $e) {
 
             Log::error('JWTException: ' . $e->getMessage());
@@ -77,208 +82,106 @@ class BookController extends Controller
     {
 
 
-        $valida = Validator::make($request->all(), [
-            'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
-            'descricao' => 'required|string|min:10', // verifica se é uma string e tem no minimo 10 caracteres
-            'imagem' => 'required|mimes:jpg,jpeg,png|max:3072', // Aceita apenas PNG, JPG, JPEG com limite de 3 MB
-        ]);
+         // Prepara os dados para o serviço
+         $data = $request->only(['titulo', 'descricao', 'imagem']);
 
-        if ($valida->fails()) {
-
-            $erros = $valida->messages(); // captura o erro
-
-            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
-
-        }
-
-        $titulo = $request->titulo;
-        $descricao = $request->descricao;
-        $imagem = $request->file('imagem');
-
-        $this->ensureDirectoriesExist();
+         try {
+             // Usa o serviço para criar o livro
+             $result = $this->bookService->createBook($data);
+ 
+             return response()->json($result, $result['code']);
+         } catch (Exception $e) {
+             Log::error('Exception: ' . $e->getMessage());
+             return response()->json(['status' => 'error', 'message' => 'Erro inesperado'], 500);
+         }
 
 
-        try {
-
-            $pathImagem = $imagem->store('thumbnail', 'public');
-
-            $token = session('jwt_token');
-
-            $user = JWTAuth::setToken($token)->authenticate();
-
-            $livro = $this->bookRepository->create([
-                'title' => $titulo,
-                'description' => $descricao,
-                'image_path' => $pathImagem,
-                'creator_id' => $user->id,
-            ]);
-
-            $livro->creator()->associate($user);
-
-            $livro->save();
-
-            return response()->json(['status' => 'success', 'message' => 'Livro criado com sucesso', 'content' => $livro, 201]);
-        } catch (Exception $e) {
-
-
-            return response()->json(['status' => 'error', 'message' => $e->getMessage(), 401]);
-        }
     }
 
     public function edit(Request $request)
     {
 
+        $bookId = $request->input('book_id');
+        $data = $request->only(['titulo', 'descricao', 'imagem']);
 
-        $valida = Validator::make($request->all(), [
-            'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
-            'descricao' => 'required|string|min:10', // verifica se é uma string e tem no minimo 10 caracteres
-            'imagem' => 'nullable|mimes:jpg,jpeg,png|max:3072', // Aceita apenas PNG, JPG, JPEG com limite de 3 MB
-            'book_id' => 'required|integer|exists:books,id', // Verifica se n está vazio e se é um integer
-        ]);
-
-        if ($valida->fails()) {
-
-            $erros = $valida->messages(); // captura o erro
-
-            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
-
-        }
-
-        $titulo = $request->titulo;
-        $descricao = $request->descricao;
-        $imagem = $request->file('imagem');
-        $book_id = $request->book_id;
-
-        $book = $this->bookRepository->find($book_id);
-
-        if($book){
-
-            try{
-
-                $book->title = $titulo;
-                $book->description = $descricao;
-    
-                if ($imagem) {
-    
-                    // Remove a imagem antiga, se existir
-                    if (Storage::disk('public')->exists($book->image_path)) {
-                        Storage::disk('public')->delete($book->image_path);
-                    }
-        
-                    // Armazena a nova imagem e atualiza o path
-                    $pathImagem = $imagem->store('thumbnail', 'public');
-                    $book->image_path = $pathImagem;
-                }
-    
-                $book->save();
-    
-                return response()->json(['status' => 'success', 'message' => 'Livro atualizado com sucesso!']);
-
-                
-            }catch(Exception $e){
-
-                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
-
-
-            }
-
-        }
-
-        
-
-         return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
-    }
-
-    public function favorite(Request $request){
-
-        $token = session('jwt_token');
-        $user = JWTAuth::setToken($token)->authenticate();
-
-        $book_id = $request->input('book_id'); 
-
-        // Verifica se o livro  existe
-        $book = $this->bookRepository->find($book_id);
-
-        // Verifica se o livro e o usuarío existe
-
-        if (!$book || !$user) {
-            return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
-        }
-    
-        // Verifica se o livro já foi favoritado pelo usuário
-        if ($user->favoritedBooks()->where('book_id', $book_id)->exists()) {
-            return response()->json(['status' => 'error', 'message' => 'Você já favoritou este livro'], 400);
-        }
-    
-        // Adiciona o livro aos favoritos do usuário
-        $user->favoritedBooks()->attach($book_id);
-    
-        return response()->json(['status' => 'success', 'message' => 'Livro favoritado com sucesso!']);
-
-    }
-
-    public function unfavorite(Request $request){
-
-        $token = session('jwt_token');
-        $user = JWTAuth::setToken($token)->authenticate();
-        $book_id = $request->book_id;
-
-        $book = $this->bookRepository->find($book_id);
-
-        if (!$book || !$user) {
-            return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
-        }
-
-        
         try {
-            $this->bookRepository->unfavoriteBook($user->id, $book_id);
-            return response()->json(['status' => 'success', 'message' => 'Livro desfavoritado com sucesso!']);
+            // Usa o serviço para atualizar o livro
+            $result = $this->bookService->updateBook($data, $bookId);
+
+            return response()->json($result, $result['code']);
         } catch (Exception $e) {
-
             Log::error('Exception: ' . $e->getMessage());
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
+            return response()->json(['status' => 'error', 'message' => 'Erro inesperado'], 500);
         }
+    }
 
+    public function favorite(Request $request)
+    {
+        $token = session('jwt_token');
+        $bookId = $request->input('book_id');
 
+        try {
 
+            $result = $this->bookService->favoriteBook($token, $bookId);
+
+            return response()->json($result, $result['code']);
+
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+            session()->forget('jwt_token');
+            return redirect()->route('pagina.login');
+            
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function unfavorite(Request $request)
+    {
+
+        $token = session('jwt_token');
+        $bookId = $request->book_id;
+
+        try {
+            // Usa o serviço para desfavoritar o livro
+            $result = $this->bookService->unfavoriteBook($token, $bookId);
+
+            return response()->json($result, $result['code']);
+        } catch (JWTException $e) {
+            Log::error('JWTException: ' . $e->getMessage());
+            session()->forget('jwt_token');
+            return redirect()->route('pagina.login');
+        } catch (Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 
     public function delete(Request $request)
     {
 
-        $valida = Validator::make($request->all(), [
-            'book_id' => 'required|integer|exists:books,id', // verifica se n está vazio e se é um integer
-        ]);
+        $token = session('jwt_token');
+        $user = JWTAuth::setToken($token)->authenticate();
+
+        try {
+            $bookId = $request->book_id;
+
+            // Usa o serviço para excluir o livro
+            $result = $this->bookService->deleteBook($bookId);
+
+            return response()->json($result, $result['code']);
+
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+            session()->forget('jwt_token');
+            return redirect()->route('pagina.login');
+
+        } catch (Exception $e) {
+
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
 
 
-        if ($valida->fails()) {
-
-            $erros = $valida->messages(); // captura o erro
-
-            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
-
-        }
-
-        $book_id = $request->book_id;
-
-        $book = $this->bookRepository->find($book_id);
-
-
-        if ($book) {
-
-            if (Storage::disk('public')->exists($book['image_path'])) {
-                Storage::disk('public')->delete($book['image_path']);
-            }
-
-            $this->bookRepository->delete($book_id);
-
-            return response()->json(['status' => 'success', 'message' => 'Livro excluido com sucesso', 201]);
-        } else {
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Livro não encontrado!'
-            ], 404);
         }
     }
 
