@@ -1,16 +1,24 @@
+# Descrição do Projeto
 
-# Guia de Instalação do Projeto Laravel
+#### O projeto é um sistema de gerenciamento de livros desenvolvido para permitir aos usuários criar, editar e excluir livros de uma biblioteca digital. A aplicação oferece um sistema de autenticação baseado em JSON Web Tokens (JWT) para garantir a segurança e a privacidade das operações realizadas pelos usuários.
 
-Este guia fornece as instruções passo a passo para instalar e configurar o projeto Laravel, incluindo a instalação de dependências PHP e JavaScript.
+# Finalidade
+####  A finalidade deste sistema é oferecer uma plataforma eficiente e segura para o gerenciamento de livros, ideal para bibliotecas digitais e catálogos de livros online
+
+# Guia de Instalação e Configuração do Projeto Laravel
+
+Este guia fornece instruções passo a passo para instalar e configurar o projeto Laravel, incluindo a instalação de dependências PHP e JavaScript e a configuração do banco de dados PostgreSQL usando Docker.
 
 ## Pré-requisitos
 
-Antes de começar, certifique-se de que você tem as seguintes ferramentas instaladas:
+Certifique-se de que você tem as seguintes ferramentas instaladas:
 
 - **PHP** (versão 8.x ou superior)
 - **Composer** (gerenciador de dependências PHP)
 - **Node.js** (versão 16.x ou superior)
 - **npm** (gerenciador de pacotes Node.js)
+- **Docker** (versão 20.x ou superior)
+- **Docker Compose** (versão 1.29.x ou superior)
 
 ## Passos para Instalação
 
@@ -23,15 +31,21 @@ git clone <URL_DO_REPOSITORIO>
 cd <NOME_DA_PASTA_DO_PROJETO>
 ```
 
-### 2. Instalar Dependências PHP
+### 2. Configurar o Docker
 
-Instale as dependências PHP do projeto usando o Composer. Se você não tiver o Composer instalado, siga as instruções na [documentação oficial do Composer](https://getcomposer.org/download/).
+Certifique-se de que o Docker está configurado corretamente para o banco de dados PostgreSQL.
 
-```bash
-composer install
-```
+1. **Iniciar o Docker e o Banco de Dados**
 
-### 3. Configurar o Ambiente
+   Execute os seguintes comandos para iniciar o banco de dados PostgreSQL no Docker:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   O Docker irá construir e iniciar o contêiner do banco de dados PostgreSQL conforme definido no arquivo `docker-compose.yml`.
+
+### 3. Configurar as Variáveis de Ambiente
 
 1. **Copiar o Arquivo `.env`**
 
@@ -73,28 +87,28 @@ composer install
      php artisan jwt:secret
      ```
 
-### 4. Instalar Dependências JavaScript
+### 4. Instalar Dependências PHP
 
-Instale as dependências JavaScript usando o npm. Se você não tiver o Node.js e o npm instalados, siga as instruções na [documentação oficial do Node.js](https://nodejs.org/).
+Instale as dependências PHP usando Composer:
+
+```bash
+composer install
+```
+
+### 5. Instalar Dependências JavaScript
+
+Instale as dependências JavaScript:
 
 ```bash
 npm install
 ```
 
-### 5. Executar Migrações do Banco de Dados
+### 6. Executar Migrações do Banco de Dados
 
 Execute as migrações do banco de dados para criar as tabelas necessárias:
 
 ```bash
 php artisan migrate
-```
-
-### 6. Iniciar o Servidor de Desenvolvimento
-
-Inicie o servidor de desenvolvimento Laravel:
-
-```bash
-php artisan serve
 ```
 
 ### 7. Verificar o Funcionamento
@@ -103,20 +117,15 @@ Acesse o aplicativo via navegador em `http://localhost:8000` para garantir que t
 
 ## Comandos Úteis
 
-- **Executar testes**: `php artisan test`
-- **Rodar o linting de JavaScript**: `npm run lint`
-- **Compilar os ativos (JavaScript e CSS)**: `npm run dev` para desenvolvimento, `npm run prod` para produção
+- **Parar o Docker e o banco de dados**: `docker-compose down`
+- **Verificar logs do Docker**: `docker-compose logs`
+- **Executar comandos dentro do contêiner Docker**: `docker-compose exec <nome_do_serviço> <comando>`
 
 ## Problemas Comuns
 
-- **Erro de conexão com o banco de dados**: Verifique as configurações no arquivo `.env` e certifique-se de que o banco de dados está rodando.
+- **Erro de conexão com o banco de dados**: Verifique as configurações no arquivo `.env` e certifique-se de que o contêiner do banco de dados está rodando.
 - **Problemas com JWT**: Verifique se a chave secreta JWT está configurada corretamente e se o arquivo `config/jwt.php` está atualizado.
 - **Dependências não instaladas**: Certifique-se de ter executado `composer install` e `npm install` corretamente.
 
-## Contribuindo
 
-Se você deseja contribuir para o projeto, siga o fluxo de trabalho Git padrão: faça um fork do repositório, crie uma branch para suas alterações e envie um pull request.
-
----
-
-Esse `README.md` fornece um guia completo para configurar o ambiente de desenvolvimento para um projeto Laravel, incluindo a instalação de dependências e configuração do ambiente. Ajuste conforme necessário para o seu projeto específico.
+Este `README.md` agora está ajustado para refletir que a aplicação Laravel está fora do Docker e que o Docker está sendo usado apenas para o banco de dados. Ajuste as instruções conforme necessário para se adequar ao seu ambiente específico.
