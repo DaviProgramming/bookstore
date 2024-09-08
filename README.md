@@ -27,8 +27,8 @@ Certifique-se de que você tem as seguintes ferramentas instaladas:
 Clone o repositório do projeto para sua máquina local:
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
-cd <NOME_DA_PASTA_DO_PROJETO>
+git clone https://github.com/DaviProgramming/bookstore
+cd bookstore
 ```
 
 ### 2. Configurar o Docker
@@ -115,6 +115,12 @@ php artisan migrate
 
 Acesse o aplicativo via navegador em `http://localhost:8000` para garantir que tudo está funcionando corretamente.
 
+### 8. Documentação da API
+
+A documentação completa da API está disponível para consulta, onde você pode encontrar informações detalhadas sobre os endpoints, parâmetros e exemplos de requisição e resposta.
+
+Acesse a documentação da API aqui: [Documentação](https://documenter.getpostman.com/view/38198843/2sAXjRWpUt#intro)
+
 ## Comandos Úteis
 
 - **Parar o Docker e o banco de dados**: `docker-compose down`
@@ -127,5 +133,3 @@ Acesse o aplicativo via navegador em `http://localhost:8000` para garantir que t
 - **Problemas com JWT**: Verifique se a chave secreta JWT está configurada corretamente e se o arquivo `config/jwt.php` está atualizado.
 - **Dependências não instaladas**: Certifique-se de ter executado `composer install` e `npm install` corretamente.
 
-
-Este `README.md` agora está ajustado para refletir que a aplicação Laravel está fora do Docker e que o Docker está sendo usado apenas para o banco de dados. Ajuste as instruções conforme necessário para se adequar ao seu ambiente específico.

@@ -32,11 +32,11 @@ class AuthController extends Controller
 
         $valida = Validator::make($request->all(), [
             'password' => 'required|string|min:5',
-            'email' => 'required|email',
+            'email' => 'required|email  ',
         ]);
 
         if ($valida->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'Dados inválidos'], 404);
+            return response()->json(['status' => 'error', 'message' => $valida->errors()], 404);
         }
 
         $credentials = $request->only('email', 'password');
@@ -66,7 +66,7 @@ class AuthController extends Controller
         ]);
 
         if ($valida->fails()) {
-            return response()->json(['status' => 'error', 'message' => 'Dados inválidos'], 404);
+            return response()->json(['status' => 'error', 'message' => $valida->errors()], 404);
         }
 
         $data = $request->only('email', 'name', 'password');

@@ -84,8 +84,6 @@ class BookController extends Controller
     public function edit(Request $request)
     {
 
-        
-
         $valida = Validator::make($request->all(), [
             'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
             'descricao' => 'required|string|min:10', // verifica se é uma string e tem no minimo 10 caracteres
@@ -106,15 +104,19 @@ class BookController extends Controller
         $imagem = $request->file('imagem');
         $book_id = $request->book_id;
 
-        $book = Book::find($book_id);
-
         $token = $request->bearerToken();
 
         if (!$token) {
             return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
         }
 
+
         $user = JWTAuth::setToken($token)->authenticate();
+
+
+        $book = Book::find($book_id);
+
+
 
         if($book && $user){
 
@@ -137,7 +139,7 @@ class BookController extends Controller
     
                 $book->save();
     
-                return response()->json(['status' => 'success', 'message' => 'Livro atualizado com sucesso!']);
+                return response()->json(['status' => 'success', 'message' => 'Livro atualizado com sucesso!', 'token' => $token]);
 
                 
             }catch(Exception $e){
@@ -202,10 +204,16 @@ class BookController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
         }
 
+        if (!$user->favoritedBooks()->where('book_id', $book_id)->exists()) {
+            return response()->json(['status' => 'error', 'message' => 'Este não está entre os favoritos'], 400);
+        }
+
         
         if ($user->favoritedBooks->contains($book->id)) {
                 $user->favoritedBooks()->detach($book->id); // Remove o livro dos favoritos
         }
+
+
 
         return response()->json(['status' => 'success', 'message' => 'Livro removido com sucesso!']);
 
