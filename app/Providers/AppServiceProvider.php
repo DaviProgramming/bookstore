@@ -9,8 +9,12 @@ use App\Repositories\LoginRepository;
 use App\Repositories\LoginRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\UserRepository;
+use App\Repositories\Api\ApiBookRepositoryInterface;
+use App\Repositories\Api\ApiBookRepository;
+use App\Repositories\Api\ApiAuthRepository;
+use App\Repositories\Api\ApiAuthRepositoryInterface;
+use App\Services\Api\ApiAuthService;
 use App\Services\UserService;
-use App\Services\AuthService;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -26,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->singleton(UserService::class, function ($app) {
             return new UserService($app->make(UserRepositoryInterface::class));
+        });
+
+        $this->app->bind(ApiBookRepositoryInterface::class, ApiBookRepository::class);
+        $this->app->bind(ApiAuthRepositoryInterface::class, ApiAuthRepository::class);
+        $this->app->bind(ApiAuthService::class, function ($app) {
+            return new ApiAuthService($app->make(ApiAuthRepositoryInterface::class));
         });
     }
 
