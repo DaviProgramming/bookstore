@@ -5,37 +5,152 @@ $.ajaxSetup({
 });
 
 const listeners = () => {
+
+
     const buttonEnviar = document.querySelector(
         'button[name="button-enviar-book"]'
     );
 
+    if(buttonEnviar != null){
 
-    buttonEnviar.addEventListener("click", (e) => {
+        buttonEnviar.addEventListener("click", (e) => {
 
-        formActions.clickedButton(e.target);
-    });
+            formActions.clickedButton(e.target);
+        });
 
+    }
+
+   
     const buttonChangeThumbnail = document.querySelector('button[name="button-thumbnail"]');
 
-    buttonChangeThumbnail.addEventListener('click', (e) => {
+    if(buttonChangeThumbnail != null){
+        buttonChangeThumbnail.addEventListener('click', (e) => {
 
-        thumbNail.clickButton(e.target);
+            thumbNail.clickButton(e.target);
+        
+        })
+    }
     
-    })
 
     const thumbnailInput = document.querySelector('input[name="thumbnail-input-new-book"]');
 
-    thumbnailInput.addEventListener('change', (e) => {
+    if(thumbnailInput != null){
+
+        thumbnailInput.addEventListener('change', (e) => {
 
 
-        thumbNail.changeInput(e)
+            thumbNail.changeInput(e)
+    
+                
+        })
 
-            
-    })
+    }
+
+    const getAllDeleteButtons = document.querySelectorAll('.table-acoes-container-icon.delete');
+
+    if(getAllDeleteButtons != null){
+
+
+        getAllDeleteButtons.forEach(deleteButton => {
+
+            deleteButton.addEventListener('click', (e) => {
+
+
+                let elementoClicado = e.target;
+
+                let id = elementoClicado.dataset.bookSet;
+
+                if(id != null){
+
+                    dashboardButtonsActions.deleteClick(id);
+
+                }else {
+
+                    elementoClicado = elementoClicado.parentNode;
+
+                    id = elementoClicado.dataset.bookSet;
+
+                    dashboardButtonsActions.deleteClick(id);
+
+
+                }
+
+
+            })
+
+        })
+
+    }
+
+    
 
     
 };
 
+const dashboardButtonsActions = {
+
+    deleteClick(id){
+
+        Swal.fire({
+            icon: 'question',
+            title: "Tem certeza que deseja deletar o Livro?",
+            showCancelButton: true,
+            confirmButtonText: "Deletar",
+            cancelButtonText: `Cancelar`
+          }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                $.ajax({
+                    
+                    type:"DELETE",
+                    url:"/book/delete-livro",
+                    data:{'book_id' : id},
+
+                    success: (response) => {
+
+                        swal.fire({
+                            icon:'success',
+                            title:response.message,
+                            showConfirmButton: false,
+                            timer: 1500,
+                        })
+        
+                        setTimeout(() => {
+        
+                            loadingActions.disableLoading();
+                            window.location.reload();
+        
+                        }, 1500)
+
+                    },
+                    error:(xhr, status, error) => {
+
+                        swal.fire({
+                            title: xhr.responseJSON.message,
+                            showConfirmButton: false,
+                            icon: 'error',
+                            timer: 1500,
+                        })
+        
+                        setTimeout(() => {
+        
+                            loadingActions.disableLoading();
+        
+        
+                        }, 1500)
+
+                    }
+
+                })
+              
+            } 
+          });
+
+
+    }
+
+}
 
 const thumbNail = {
 
@@ -156,7 +271,7 @@ const validations = {
 
     descricaoBook(description) {
         // Define as regras de validação
-        const minLength = 30; // Comprimento mínimo recomendado
+        const minLength = 10; // Comprimento mínimo recomendado
         const maxLength = 1000; // Comprimento máximo recomendado
         const invalidChars = /[^a-zA-Z0-9\s.,!?'"()-]/; // Caracteres inválidos permitidos (opcional)
 
@@ -165,7 +280,7 @@ const validations = {
 
         // Valida se a descrição está vazia
         if (descriptionValue.length === 0) {
-            return false;
+            return {'status': false, 'error': 'Comprimento mínimo de 10 caracteres'};
         }
 
         // Valida o comprimento da descrição
@@ -173,16 +288,16 @@ const validations = {
             descriptionValue.length < minLength ||
             descriptionValue.length > maxLength
         ) {
-            return false;
+            return {'status': false, 'error': 'Comprimento maior ou menor que o tamanho recomendado'};
         }
 
         // Valida caracteres inválidos (opcional)
-        if (invalidChars.test(descriptionValue)) {
-            return false;
+        if (invalidChars.test(descriptionValue) == false) {
+            return {'status': false, 'error': 'Caracteres inválidos'};
         }
 
         // Se todas as validações forem bem-sucedidas
-        return true;
+        return {'status': true, 'error': null};
 
     },
 };
@@ -261,10 +376,10 @@ const formActions = {
 
         }
 
-        if(validations.descricaoBook(textareaDescricao.value) != true){
+        if(validations.descricaoBook(textareaDescricao.value).status != true){
 
             erro++;
-            spanErrosActions.activeSpan(spanDescricao);
+            spanErrosActions.activeSpan(spanDescricao, validations.descricaoBook(textareaDescricao.value).error);
 
 
         }else {

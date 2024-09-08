@@ -1,0 +1,84 @@
+.table{
+    border-radius: 6px;
+    overflow: hidden;
+    min-width: 500px;
+    thead {
+
+        th{
+
+            background: $azul;
+            text-align: center;
+        }
+
+
+
+    }
+
+    tbody tr{
+        height: 50px;
+    }
+
+    tbody tr td{
+        max-width: 300px;
+    }
+
+    .table-descricao-container, .table-titulo-container{
+
+        max-height: 50px;
+        overflow-y: auto;
+        overflow-x: hidden;
+
+    }
+
+
+    .table-image-container{
+
+        height: 50px;
+        width: 50px;
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    }
+
+    .table-acoes{
+        height: 100%;
+        &-container{
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            height: 50px;
+
+
+            &-icon{
+                width: 30px;
+                height: 30px;
+                background: $cinza;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+
+                &:hover{
+                    background: $ciano;
+                    cursor: pointer;
+                }
+
+                &.delete{
+
+                    &:hover{
+                        background: $vermelho;
+                    }
+
+                }
+            }
+        }
+    }
+    
+}

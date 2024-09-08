@@ -4,41 +4,61 @@
         <a class="btn btn-primary" href="{{route('pagina.dashboard', ["page" => 'novo-livro'])}}"><i class="fa-solid fa-book-medical"></i> Adicionar Livro</a>
     </div>
     <div class="container-dashboard-content">
-        <table class="table table-dark">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Titulo</th>
-                <th scope="col">Capa</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
 
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-                <td>@mdo</td>
 
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-                <td>@mdo</td>
-
-              </tr>
-            </tbody>
-          </table>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Titulo</th>
+                    <th scope="col">Capa</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+    
+                    @if (!empty($books) && count($books) >= 1)
+    
+                        @foreach ($books as $book)
+    
+                            <tr>
+                                <th scope="row">{{$book->id}}</th>
+                                <td class="table-titulo"><div class="table-titulo-container">{{$book->title}}</div></td>
+                                <td class="table-image"> <div class="table-image-container"><img src="{{ Storage::url($book->image_path) }}" alt="{{ $book->title }}"></div> </td>
+                                <td class="table-descricao"><div class="table-descricao-container">{{$book->description}}</div></td>
+                                <td class="table-acoes">
+                                    <div class="table-acoes-container">
+                                        <div class="table-acoes-container-icon edit" data-book-set="{{$book->id}}">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </div>
+                                        <div class="table-acoes-container-icon delete" data-book-set="{{$book->id}}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </div>
+                                    </div>
+                                    
+                                </td>
+                            </tr>
+                        
+                        @endforeach
+    
+    
+                    @else
+    
+                    <tr>
+                        <th scope="row">#</th>
+                        <td>Nenhum</td>
+                        <td>Livro</td>
+                        <td>Encontrado</td>
+                    </tr>
+                        
+                    @endif
+                
+                </tbody>
+              </table>
+        </div>
+       
+        
     </div>
 </div>

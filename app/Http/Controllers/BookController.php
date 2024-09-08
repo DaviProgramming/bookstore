@@ -13,34 +13,14 @@ use Exception;
 
 class BookController extends Controller
 {
-    public function index(){
+    public function index($page = null){
 
         try {
 
             $token = session('jwt_token');
     
             $user = JWTAuth::setToken($token)->authenticate();
-
-
-        } catch (JWTException $e) {
-           
-            return redirect()->route('pagina.login');
-
-        }
-
-        return view('pages.dashboard', ['user' => $user]);
-
-    }
-
-    public function create($page = null){
-
-
-        try {
-
-            $token = session('jwt_token');
-    
-            $user = JWTAuth::setToken($token)->authenticate();
-
+            $all_books = Book::all();
 
         } catch (JWTException $e) {
 
@@ -52,22 +32,22 @@ class BookController extends Controller
 
         }
 
-        return view('pages.dashboard')->with(['user' => $user, 'page' => $page]);
-
+        return view('pages.dashboard')->with(['user' => $user, 'page' => $page, 'books' => $all_books]);
 
     }
+
+   
 
     public function store(Request $request){
 
 
         $valida = Validator::make($request->all(), [
-            'titulo' => 'required|string|min:3', // Senha deve ser uma string com pelo menos 8 caracteres
-            'descricao' => 'required|string|min:30', // verifica se este é um email valido
+            'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
+            'descricao' => 'required|string|min:10', // verifica se é uma string e tem no minimo 10 caracteres
             'imagem' => 'required|mimes:jpg,jpeg,png|max:3072', // Aceita apenas PNG, JPG, JPEG com limite de 3 MB
         ]);
 
         if ($valida->fails()) {
-
 
             $erros = $valida->messages(); // captura o erro
 
@@ -111,6 +91,54 @@ class BookController extends Controller
         }
 
         
+
+    }
+
+    public function delete(Request $request){
+
+        $valida = Validator::make($request->all(), [
+            'book_id' => 'required|integer|exists:books,id' , // verifica se n está vazio e se é um integer
+        ]);
+        
+
+        if ($valida->fails()) {
+
+            $erros = $valida->messages(); // captura o erro
+
+            return response()->json(['status' => 'error' , 'message' => $erros], 404); // se a validacao falhar, retorno um erro
+
+        }
+
+        $book_id = $request->book_id;
+
+
+
+
+        $book = Book::find($book_id);
+
+
+        if($book){
+
+            if (Storage::disk('public')->exists($book['image_path'])) {
+                Storage::disk('public')->delete($book['image_path']);
+            }
+
+            $book->delete();
+
+
+            return response()->json(['status' => 'success', 'message' => 'Livro excluido com sucesso', 201]);
+            
+        }else {
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Livro não encontrado!'
+            ], 404);
+        }
+
+
+
+
 
     }
 

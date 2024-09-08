@@ -24,15 +24,8 @@
         display: flex;
         flex-direction: column;
         gap: 5px;
+        @import "./dashboard/table-books";
 
-        .table{
-            border-radius: 6px;
-            overflow: hidden;
-            thead th{
-
-                background: $azul;
-
-            }
-        }
     }
+
 }
