@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Models\User;
 use App\Models\Book;
 use Exception;
 
@@ -16,8 +15,61 @@ class BookController extends Controller
 {
 
     
+
+    public function index($page = null)
+    {
+
+        try {
+
+            $token = session('jwt_token');
+
+            $user = JWTAuth::setToken($token)->authenticate();
+            $all_books = Book::all();
+            $favorited_books = $user->favoritedBooks->pluck('id');
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+
+            session()->forget('jwt_token');
+
+            return redirect()->route('pagina.login');
+        }
+
+        return view('pages.dashboard')->with(['user' => $user, 'page' => $page, 'books' => $all_books, 'favorited_books' => $favorited_books]);
+    }
+
+    public function showEditForm($id)
+    {
+
+        try {
+
+            $token = session('jwt_token');
+
+            $user = JWTAuth::setToken($token)->authenticate();
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+
+            session()->forget('jwt_token');
+
+            return redirect()->route('pagina.login');
+        }
+
+        $book = Book::find($id);
+
+
+        if ($book) {
+
+            return view('pages.dashboard')->with(['page' => 'editar', 'book' => $book, 'user' => $user]);
+        } else {
+
+            return redirect()->route('pagina.dashboard', ['page' => 'inicio']);
+        }
+    }
+
     public function store(Request $request)
     {
+
 
         $valida = Validator::make($request->all(), [
             'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
@@ -39,39 +91,24 @@ class BookController extends Controller
 
         $this->ensureDirectoriesExist();
 
+
         try {
 
             $pathImagem = $imagem->store('thumbnail', 'public');
 
-            $token = $request->bearerToken();
-
-            if (!$token) {
-                return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
-            }
+            $token = session('jwt_token');
 
             $user = JWTAuth::setToken($token)->authenticate();
 
+            $livro = new Book([
+                'title' => $titulo,
+                'description' => $descricao,
+                'image_path' => $pathImagem,
+            ]);
 
-            if($user){
+            $livro->creator()->associate($user);
 
-                $livro = new Book([
-                    'title' => $titulo,
-                    'description' => $descricao,
-                    'image_path' => $pathImagem,
-                ]);
-    
-                $livro->creator()->associate($user);
-    
-                $livro->save();
-
-            }else {
-
-
-                return response()->json(['status' => 'error', 'message' => 'Token invalido', 401]);
-
-            }
-
-            
+            $livro->save();
 
             return response()->json(['status' => 'success', 'message' => 'Livro criado com sucesso', 'content' => $livro, 201]);
         } catch (Exception $e) {
@@ -107,15 +144,7 @@ class BookController extends Controller
 
         $book = Book::find($book_id);
 
-        $token = $request->bearerToken();
-
-        if (!$token) {
-            return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
-        }
-
-        $user = JWTAuth::setToken($token)->authenticate();
-
-        if($book && $user){
+        if($book){
 
             try{
 
@@ -155,10 +184,7 @@ class BookController extends Controller
 
     public function favorite(Request $request){
 
-        $token = $request->bearerToken();
-        if (!$token) {
-            return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
-        }
+        $token = session('jwt_token');
         $user = JWTAuth::setToken($token)->authenticate();
 
         $book_id = $request->input('book_id'); 
@@ -186,10 +212,7 @@ class BookController extends Controller
 
     public function unfavorite(Request $request){
 
-        $token = $request->bearerToken();
-        if (!$token) {
-            return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
-        }
+        $token = session('jwt_token');
         $user = JWTAuth::setToken($token)->authenticate();
         $book_id = $request->book_id;
 

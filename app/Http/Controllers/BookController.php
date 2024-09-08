@@ -9,10 +9,19 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\Book;
+use App\Repositories\BookRepositoryInterface;
 use Exception;
 
 class BookController extends Controller
 {
+
+    protected $bookRepository;
+
+    public function __construct(BookRepositoryInterface $bookRepository)
+    {
+        $this->bookRepository = $bookRepository;
+    }
+
     public function index($page = null)
     {
 
@@ -52,7 +61,7 @@ class BookController extends Controller
             return redirect()->route('pagina.login');
         }
 
-        $book = Book::find($id);
+        $book = $this->bookRepository->find($id);
 
 
         if ($book) {
@@ -97,10 +106,11 @@ class BookController extends Controller
 
             $user = JWTAuth::setToken($token)->authenticate();
 
-            $livro = new Book([
+            $livro = $this->bookRepository->create([
                 'title' => $titulo,
                 'description' => $descricao,
                 'image_path' => $pathImagem,
+                'creator_id' => $user->id,
             ]);
 
             $livro->creator()->associate($user);
@@ -139,7 +149,7 @@ class BookController extends Controller
         $imagem = $request->file('imagem');
         $book_id = $request->book_id;
 
-        $book = Book::find($book_id);
+        $book = $this->bookRepository->find($book_id);
 
         if($book){
 
@@ -187,8 +197,8 @@ class BookController extends Controller
         $book_id = $request->input('book_id'); 
 
         // Verifica se o livro  existe
-        $book = Book::find($book_id);
-        
+        $book = $this->bookRepository->find($book_id);
+
         // Verifica se o livro e o usuarío existe
 
         if (!$book || !$user) {
@@ -213,18 +223,22 @@ class BookController extends Controller
         $user = JWTAuth::setToken($token)->authenticate();
         $book_id = $request->book_id;
 
-        $book = Book::find($book_id);
+        $book = $this->bookRepository->find($book_id);
 
         if (!$book || !$user) {
             return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
         }
 
         
-        if ($user->favoritedBooks->contains($book->id)) {
-                $user->favoritedBooks()->detach($book->id); // Remove o livro dos favoritos
+        try {
+            $this->bookRepository->unfavoriteBook($user->id, $book_id);
+            return response()->json(['status' => 'success', 'message' => 'Livro desfavoritado com sucesso!']);
+        } catch (Exception $e) {
+
+            Log::error('Exception: ' . $e->getMessage());
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 400);
         }
 
-        return response()->json(['status' => 'success', 'message' => 'Livro removido com sucesso!']);
 
 
     }
@@ -247,7 +261,7 @@ class BookController extends Controller
 
         $book_id = $request->book_id;
 
-        $book = Book::find($book_id);
+        $book = $this->bookRepository->find($book_id);
 
 
         if ($book) {
@@ -256,8 +270,7 @@ class BookController extends Controller
                 Storage::disk('public')->delete($book['image_path']);
             }
 
-            $book->delete();
-
+            $this->bookRepository->delete($book_id);
 
             return response()->json(['status' => 'success', 'message' => 'Livro excluido com sucesso', 201]);
         } else {
