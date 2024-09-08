@@ -288,6 +288,17 @@ const formActions = {
             spanErrosActions.disableSpan(spanImagem);
 
         }
+
+
+        if(erro == 0){
+
+            return true;
+
+        }else {
+
+            return false;
+
+        }
         
 
     },
@@ -299,12 +310,52 @@ const formActions = {
 
         if(this.verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem) == true){
 
+            loadingActions.activeLoading();
 
+            this.tryRegisterNewBook(inputTitulo.value, textareaDescricao.value, inputImagem.files[0]);
 
         } 
 
 
+    },
+
+    tryRegisterNewBook(titulo, descricao, imagem){
+
+        console.log('chegou aqui')
+
+        loadingActions.disableLoading();
+
+        let formData = new FormData();
+
+        formData.append('titulo', titulo);
+        formData.append('descricao', descricao);
+        formData.append('imagem', imagem);
+
+        $.ajax({
+
+            url: "/book/novo-livro",
+            data: formData,
+            type: 'POST',
+            processData: false, 
+            contentType: false, 
+            success: (response) => {
+
+                console.log(response);
+
+            },
+
+            error: (xhr, status, erro) => {
+
+                console.log(xhr.responseJSON.message);
+
+            }
+
+
+        })
+
     }
+
+
 }
 
 listeners();

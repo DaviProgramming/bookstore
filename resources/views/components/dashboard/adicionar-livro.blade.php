@@ -11,7 +11,7 @@
                 </div>
                 <span class="book-form-content-input-error titulo"><i class="fa-solid fa-circle-exclamation"></i> <span>Titulo inválido</span></span>
                 <div class="book-form-content-input-group">
-                    <textarea name="description"  placeholder="Descrição"></textarea>
+                    <textarea name="description"  placeholder="Descrição" maxlength="1000"></textarea>
                 </div>
                 <span class="book-form-content-input-error description"><i class="fa-solid fa-circle-exclamation"></i> <span>Descrição inválida</span></span>
                 <div class="book-form-content-input-group thumbnail">

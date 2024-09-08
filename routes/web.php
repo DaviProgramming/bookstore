@@ -17,16 +17,14 @@ use App\Http\Middleware\RefreshToken;
 Route::get('/', [LoginController::class, 'index'])->middleware(VerificaNaoLogado::class)->name('pagina.login');
 Route::get('/cadastro', [UserController::class, 'create'])->middleware(VerificaNaoLogado::class)->name('pagina.cadastro');
 Route::get('/dashboard/{page?}', [BookController::class, 'create'])->middleware(VerificaLogado::class)->name('pagina.dashboard');
-
-
-
-
-
 Route::get('/dashboard/{page?}', [BookController::class, 'create'])->middleware(VerificaLogado::class)->name('pagina.dashboard');
+
+
 
 Route::post('/evento/cadastro', [UserController::class, 'store'])->middleware(VerificaNaoLogado::class)->name('evento.cria-usuario');
 Route::post('/evento/login', [LoginController::class, 'login'])->middleware(VerificaNaoLogado::class)->name('evento.login');
 
+Route::post('/book/novo-livro', [BookController::class, 'store'])->middleware(VerificaLogado::class)->name('book.novo-livro');
 
 Route::get('/evento/forget', function () {
 
@@ -34,7 +32,6 @@ Route::get('/evento/forget', function () {
 
     return redirect()->route('pagina.login');
 })->name('sair-teste');
-
 
 Route::post('/logout', function (Request $request) {
     
