@@ -7,8 +7,7 @@
         <div class="book-form">
             <div class="book-form-content">
                 <div class="book-form-content-input-group">
-                    <label for="title-new-book-input">Titulo</label>
-                    <input type="text" id="title-new-book-input" name="titulo-input">
+                    <input type="text" id="title-new-book-input" name="titulo-input" placeholder="Titulo" maxlength="100">
                 </div>
                 <span class="book-form-content-input-error email"><i class="fa-solid fa-circle-exclamation"></i> <span>Titulo inválido</span></span>
                 <div class="book-form-content-input-group">
@@ -18,11 +17,11 @@
                 <div class="book-form-content-input-group thumbnail">
                     <span >Adicionar Thumbnail</span>
                     <button type="button" name="button-thumbnail" class="btn btn-light"><i class="fa-solid fa-upload"></i> Upload</button>
-                    <input type="text" name="thumbnail-input-new-book" hidden>
+                    <input type="file" name="thumbnail-input-new-book" accept="image/jpg, image/png, image/jpeg" hidden>
                 </div>
             </div>
           
-            <button type="button" name="button-login"><span>Entrar</span></button>
+            <button type="button" name="button-enviar-book"><span>Enviar</span></button>
         </div>
        
     </div>
