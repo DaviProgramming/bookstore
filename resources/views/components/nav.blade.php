@@ -14,7 +14,7 @@
             {{$user->name}}
             </button>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{route('sair-teste')}}">Sair</a></li>
+              <li><a class="dropdown-item" href="{{route('auth.logout')}}">Sair</a></li>
             </ul>
           </div>
     </div>

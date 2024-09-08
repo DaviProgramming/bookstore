@@ -178,6 +178,12 @@ class BookController extends Controller
          return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
     }
 
+    public function favorite(Request $request, $book_id){
+
+
+
+    }
+
     public function delete(Request $request)
     {
 
@@ -217,6 +223,7 @@ class BookController extends Controller
             ], 404);
         }
     }
+
 
 
     protected function ensureDirectoriesExist() // funcao que garante que os diretorios existam 

@@ -339,7 +339,7 @@ const formActions = {
         $.ajax({
 
             type:"POST",
-            url:"/evento/login",
+            url:"/auth/login",
             data:formData,
             processData: false, 
             contentType: false, 

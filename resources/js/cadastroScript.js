@@ -386,7 +386,7 @@ const formActions = {
         $.ajax({
 
             type:"POST",
-            url:"/evento/cadastro",
+            url:"/auth/cadastro",
             data:formData,
             processData: false, 
             contentType: false, 
