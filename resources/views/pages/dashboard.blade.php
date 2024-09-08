@@ -55,6 +55,8 @@
 
 </section>
 
+@include('./components/footer')
+
 @include('./components/loader-page')
 
 

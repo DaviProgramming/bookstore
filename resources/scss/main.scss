@@ -7,6 +7,8 @@
 @import "./components/navbar";
 @import "./components/loader-page";
 @import "./components/aside";
+@import "./components/footer";
+
 
 @import "./pages/login-cadastro";
 @import "./pages/dashboard";
@@ -22,6 +24,10 @@ body{
     background: $cinza;
     font-family: $font-primaria;
     color: $branco;
+    min-height: 100vh;
+}
+
+section{
     min-height: 100vh;
 }
 
