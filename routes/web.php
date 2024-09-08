@@ -1,13 +1,13 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\BookController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
-use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\BookController;
 
 use App\Http\Middleware\VerificaLogado;
 use App\Http\Middleware\VerificaNaoLogado;
@@ -21,7 +21,7 @@ Route::get('/dashboard/editar/{id}', [BookController::class, 'showEditForm'])->m
 // Rotas de autenticação
 Route::post('/auth/cadastro', [UserController::class, 'store'])->middleware(VerificaNaoLogado::class)->name('evento.cria-usuario'); // Rota para criar um novo usuário
 Route::post('/auth/login', [LoginController::class, 'login'])->middleware(VerificaNaoLogado::class)->name('evento.login'); // Rota para login do usuário
-Route::post('/auth/logout', [LoginController::class, 'logout'])->middleware(VerificaLogado::class)->name('auth.logout'); // Rota para logout do usuário
+Route::get('/auth/logout', [LoginController::class, 'logout'])->middleware(VerificaLogado::class)->name('auth.logout'); // Rota para logout do usuário
 
 // Rotas de ações dos livros
 Route::post('/book/novo-livro', [BookController::class, 'store'])->middleware(VerificaLogado::class)->name('book.novo-livro'); // Rota para adicionar um novo livro
@@ -29,6 +29,7 @@ Route::put('/book/editar-livro', [BookController::class, 'edit'])->middleware(Ve
 Route::delete('/book/delete-livro', [BookController::class, 'delete'])->middleware(VerificaLogado::class)->name('book.delete-livro'); // Rota para deletar um livro
 Route::post('/book/favoritar', [BookController::class, 'favorite'])->middleware(VerificaLogado::class)->name('book.favorita-livro');// Rota para favoritar um livro
 Route::post('/book/unfavorite', [BookController::class, 'unfavorite'])->middleware(VerificaLogado::class)->name('book.desfavorita-livro');
+
 
 
 

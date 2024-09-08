@@ -394,7 +394,7 @@ const formActions = {
 
                 swal.fire({
                     icon:'success',
-                    title: response.token,
+                    title: response.message,
                     showConfirmButton: false,
                     timer: 1500,
                 })
