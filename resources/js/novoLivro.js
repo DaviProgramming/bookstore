@@ -156,7 +156,7 @@ const validations = {
 
     descricaoBook(description) {
         // Define as regras de validação
-        const minLength = 10; // Comprimento mínimo recomendado
+        const minLength = 30; // Comprimento mínimo recomendado
         const maxLength = 1000; // Comprimento máximo recomendado
         const invalidChars = /[^a-zA-Z0-9\s.,!?'"()-]/; // Caracteres inválidos permitidos (opcional)
 
@@ -321,10 +321,6 @@ const formActions = {
 
     tryRegisterNewBook(titulo, descricao, imagem){
 
-        console.log('chegou aqui')
-
-        loadingActions.disableLoading();
-
         let formData = new FormData();
 
         formData.append('titulo', titulo);
@@ -340,13 +336,38 @@ const formActions = {
             contentType: false, 
             success: (response) => {
 
-                console.log(response);
+                swal.fire({
+                    icon:'success',
+                    title:response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+                    window.location.href = '/dashboard/inicio';
+
+                }, 1500)
+                
 
             },
 
             error: (xhr, status, erro) => {
 
-                console.log(xhr.responseJSON.message);
+                swal.fire({
+                    title: xhr.responseJSON.message,
+                    showConfirmButton: false,
+                    icon: 'error',
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+
+
+                }, 1500)
 
             }
 

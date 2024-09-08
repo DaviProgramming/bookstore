@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Models\Book;
+use Exception;
+
 class BookController extends Controller
 {
     public function index(){
@@ -79,6 +81,9 @@ class BookController extends Controller
 
         $this->ensureDirectoriesExist();
 
+
+        try{
+
         $pathImagem = $imagem->store('thumbnail', 'public');
 
         $token = session('jwt_token');
@@ -95,7 +100,17 @@ class BookController extends Controller
 
         $livro->save();
 
-        return response()->json(['status' => 'success', 'message' => 'chegou no servidor!', 'content' => $livro, 201]);
+        return response()->json(['status' => 'success', 'message' => 'Livro criado com sucesso', 'content' => $livro, 201]);
+
+        }catch(Exception $e){
+
+
+            return response()->json(['status' => 'error', 'message' => $e->getMessage() , 401]);
+
+
+        }
+
+        
 
     }
 

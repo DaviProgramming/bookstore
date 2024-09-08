@@ -345,7 +345,6 @@ const formActions = {
             contentType: false, 
             success: (response) => {
 
-                console.log(response);
 
                 swal.fire({
                     icon:'success',
@@ -365,7 +364,6 @@ const formActions = {
             },
             error: (xhr, status ,error) => {
 
-                console.log(xhr.responseJSON.message);
 
                 swal.fire({
                     title: xhr.responseJSON.message,
