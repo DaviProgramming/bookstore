@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - postgres
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=bookstore
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    networks:
+      - bookstore_network
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=bookstore
+    volumes:
+      - bookstore_pg_data:/var/lib/postgresql/data
+    networks:
+      - bookstore_network
+
+volumes:
+  bookstore_pg_data:
+
+networks:
+  bookstore_network:

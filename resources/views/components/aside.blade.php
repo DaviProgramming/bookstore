@@ -2,7 +2,7 @@
     <div class="aside-container">
         <div class="aside-container-header">
             <div class="aside-container-header-icon">
-                W
+                B
             </div>
         </div>
         <div class="aside-container-body">
