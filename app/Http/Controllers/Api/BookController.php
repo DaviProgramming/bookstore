@@ -84,6 +84,7 @@ class BookController extends Controller
     public function edit(Request $request)
     {
 
+        
 
         $valida = Validator::make($request->all(), [
             'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
@@ -159,6 +160,8 @@ class BookController extends Controller
         if (!$token) {
             return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
         }
+
+
         $user = JWTAuth::setToken($token)->authenticate();
 
         $book_id = $request->input('book_id'); 
@@ -211,11 +214,15 @@ class BookController extends Controller
 
     public function delete(Request $request)
     {
+        $token = $request->bearerToken();
+
+        if (!$token) {
+            return response()->json(['status' => 'error', 'message' => 'Token não fornecido'], 401);
+        }
 
         $valida = Validator::make($request->all(), [
             'book_id' => 'required|integer|exists:books,id', // verifica se n está vazio e se é um integer
         ]);
-
 
         if ($valida->fails()) {
 

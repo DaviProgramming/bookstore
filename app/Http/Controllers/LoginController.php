@@ -67,9 +67,8 @@ class LoginController extends Controller
         try {
             $token = $this->authService->getTokenFromSession();
             $newToken = $this->authService->refreshToken($token);
-            $this->authService->setTokenInSession($newToken);
 
-            return response()->json(['status' => 'success', 'message' => 'Token atualizado com sucesso!']);
+            return response()->json(['status' => 'success', 'message' => 'Token atualizado com sucesso!', 'token' => $newToken]);
 
         } catch (JWTException $e) {
             Log::error('JWTException: ' . $e->getMessage());

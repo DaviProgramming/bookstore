@@ -68,6 +68,8 @@ const listeners = () => {
 
             deleteButton.addEventListener('click', (e) => {
 
+                console.log(e);
+
 
                 let elementoClicado = e.target;
 
@@ -137,7 +139,7 @@ const listeners = () => {
         getAllUnfavoriteButtons.forEach(unfavoritedButton => {
 
             unfavoritedButton.addEventListener('click', (e) => {
-
+                
 
                 let elementoClicado = e.target;
 
