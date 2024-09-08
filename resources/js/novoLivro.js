@@ -12,7 +12,7 @@ const listeners = () => {
 
     buttonEnviar.addEventListener("click", (e) => {
 
-
+        formActions.clickedButton(e.target);
     });
 
     const buttonChangeThumbnail = document.querySelector('button[name="button-thumbnail"]');
@@ -48,8 +48,6 @@ const thumbNail = {
 
     changeInput(e){
 
-        console.log(e.target);
-
             let files = e.target.files;
             let maxSize = 3 * 1024 * 1024;
         
@@ -72,7 +70,7 @@ const thumbNail = {
                     spanToChange.innerHTML = "Adicionar Thumbnail";
 
                     e.target.value = "";
-                    return;
+                    return false;
                 }
         
                 if (allowedTypes.includes(fileType)) {
@@ -80,6 +78,8 @@ const thumbNail = {
 
                     let spanToChange = document.querySelector('.book-form-content-input-group.thumbnail span');
                     spanToChange.innerHTML = file.name;
+
+                    return true;
                     
                     
                 } else {
@@ -97,6 +97,9 @@ const thumbNail = {
 
         
                     e.target.value = "";
+
+                    return false;
+
                 }
 
 
@@ -113,6 +116,8 @@ const thumbNail = {
                     spanToChange.innerHTML = "Adicionar Thumbnail";
         
                 e.target.value = "";
+                return false;
+
             }
 
 
@@ -128,7 +133,7 @@ const validations = {
         const invalidChars = /[^a-zA-Z0-9\s]/; // Caracteres inválidos (opcional)
 
         // Remove espaços em branco das extremidades
-        const titleValue = title.trim();
+        const titleValue = titulo.trim();
 
         // Valida se o título está vazio
         if (titleValue.length === 0) {
@@ -219,5 +224,87 @@ const loadingActions = {
         }
     },
 };
+
+const formActions = {
+
+    getInputsAndSpans(){
+
+        let inputTitulo = document.querySelector('#title-new-book-input');
+        let spanErroTitulo = document.querySelector('.book-form-content-input-error.titulo');
+
+        let textareaDescricao = document.querySelector('textarea[name="description"]');
+        let spanErroDescricao = document.querySelector('.book-form-content-input-error.description')
+        
+        let inputImagem = document.querySelector('input[name="thumbnail-input-new-book"]');
+        let spanErroImagem = document.querySelector('.book-form-content-input-error.thumbnail')
+
+
+        return {inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem}
+
+    },
+
+    verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanTitulo, spanDescricao, spanImagem){
+
+        let erro = 0;
+
+        if(validations.tituloBook(inputTitulo.value) != true){
+
+                erro++;
+
+                spanErrosActions.activeSpan(spanTitulo);
+
+
+        }else {
+
+                spanErrosActions.disableSpan(spanTitulo);
+
+
+        }
+
+        if(validations.descricaoBook(textareaDescricao.value) != true){
+
+            erro++;
+            spanErrosActions.activeSpan(spanDescricao);
+
+
+        }else {
+
+            spanErrosActions.disableSpan(spanDescricao);
+
+        }
+
+        let modifyInputToObject = {
+            'target': inputImagem
+        }
+
+
+        if(thumbNail.changeInput(modifyInputToObject) != true){
+
+            erro++;
+            spanErrosActions.activeSpan(spanImagem);
+
+        }else{
+
+            spanErrosActions.disableSpan(spanImagem);
+
+        }
+        
+
+    },
+
+    clickedButton(button){
+
+        let {inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem} = this.getInputsAndSpans();
+        
+
+        if(this.verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem) == true){
+
+
+
+        } 
+
+
+    }
+}
 
 listeners();
