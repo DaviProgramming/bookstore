@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Repositories\BookRepositoryInterface;
 use App\Services\BookService;
@@ -88,8 +88,13 @@ class BookController extends Controller
          try {
              // Usa o serviço para criar o livro
              $result = $this->bookService->createBook($data);
+
+             $token = session('jwt_token');
  
+             $this->bookService->enviarEmail($token, $request->titulo);
+
              return response()->json($result, $result['code']);
+
          } catch (Exception $e) {
              Log::error('Exception: ' . $e->getMessage());
              return response()->json(['status' => 'error', 'message' => 'Erro inesperado'], 500);

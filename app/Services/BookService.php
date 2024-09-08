@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Repositories\BookRepositoryInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LivroCriadoComSucesso;
+ 
 use Exception;
 
 class BookService
@@ -178,5 +181,20 @@ class BookService
         }
 
         return ['status' => 'error', 'message' => 'Livro não encontrado!', 'code' => 404];
+    }
+
+    public function enviarEmail($token, $titulo){
+
+        try {
+            
+            // Autentica o usuário pelo token JWT
+            $user = JWTAuth::setToken($token)->authenticate();
+            
+            // Envia o e-mail de confirmação para o usuário
+            Mail::to($user->email)->send(new LivroCriadoComSucesso($user->name, $titulo));
+        } catch (Exception $e) {
+            throw new Exception('Erro ao enviar o e-mail: ' . $e->getMessage());
+        }
+
     }
 }
