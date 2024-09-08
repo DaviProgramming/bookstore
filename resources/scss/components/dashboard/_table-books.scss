@@ -2,10 +2,12 @@
     border-radius: 6px;
     overflow: hidden;
     min-width: 500px;
+
+
     thead {
 
         th{
-
+            
             background: $azul;
             text-align: center;
         }
@@ -20,6 +22,14 @@
 
     tbody tr td{
         max-width: 300px;
+    
+        
+    }
+
+    th, td {
+        text-align: center; /* Centraliza o texto */
+        padding: 10px; /* Espaçamento interno opcional */
+        vertical-align: middle; /* Alinha verticalmente o conteúdo */
     }
 
     .table-descricao-container, .table-titulo-container{
@@ -33,13 +43,14 @@
 
     .table-image-container{
 
-        height: 50px;
-        width: 50px;
+       width: 100%;
+       height: 100%;
 
         img{
-            width: 100%;
-            height: 100%;
+            width: 50px;
+            height: 50px;
             object-fit: cover;
+            border-radius: 3px;
         }
 
     }
@@ -64,6 +75,9 @@
                 align-items: center;
                 justify-content: center;
                 border-radius: 50%;
+
+                text-decoration: none;
+                color: $branco;
 
                 &:hover{
                     background: $ciano;

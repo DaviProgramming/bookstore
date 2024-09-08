@@ -20,7 +20,6 @@ const listeners = () => {
 
     }
 
-   
     const buttonChangeThumbnail = document.querySelector('button[name="button-thumbnail"]');
 
     if(buttonChangeThumbnail != null){
@@ -81,8 +80,6 @@ const listeners = () => {
         })
 
     }
-
-    
 
     
 };

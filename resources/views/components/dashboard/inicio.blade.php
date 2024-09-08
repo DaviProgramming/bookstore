@@ -30,9 +30,9 @@
                                 <td class="table-descricao"><div class="table-descricao-container">{{$book->description}}</div></td>
                                 <td class="table-acoes">
                                     <div class="table-acoes-container">
-                                        <div class="table-acoes-container-icon edit" data-book-set="{{$book->id}}">
+                                        <a href="{{route('pagina.edit-livro', ['id' => $book->id])}}" class="table-acoes-container-icon edit" data-book-set="{{$book->id}}">
                                             <i class="fa-solid fa-pen"></i>
-                                        </div>
+                                        </a>
                                         <div class="table-acoes-container-icon delete" data-book-set="{{$book->id}}">
                                             <i class="fa-solid fa-trash"></i>
                                         </div>

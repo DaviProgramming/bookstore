@@ -25,7 +25,10 @@
         flex-direction: column;
         gap: 5px;
         @import "./dashboard/table-books";
+        
+        @import "./dashboard/preview-book";
 
     }
+
 
 }

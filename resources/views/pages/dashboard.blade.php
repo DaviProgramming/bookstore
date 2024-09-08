@@ -38,8 +38,14 @@
     @elseif($page == 'novo-livro')
 
     @include('./components/dashboard/adicionar-livro')
+
+    @elseif($page == 'editar')
+
+    @include('./components/dashboard/editar-livro')
         
     @endif
+
+    
 
 
 

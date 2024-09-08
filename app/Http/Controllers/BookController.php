@@ -36,7 +36,41 @@ class BookController extends Controller
 
     }
 
-   
+    public function showEditForm($id){
+
+        try {
+
+            $token = session('jwt_token');
+    
+            $user = JWTAuth::setToken($token)->authenticate();
+
+        } catch (JWTException $e) {
+
+            Log::error('JWTException: ' . $e->getMessage());
+
+            session()->forget('jwt_token');
+           
+            return redirect()->route('pagina.login');
+
+        }
+
+        $book = Book::find($id);
+
+
+        if($book){
+
+         return view('pages.dashboard')->with(['page' => 'editar', 'book' => $book, 'user' => $user]);
+
+        }else{
+
+            return redirect()->route('pagina.dashboard', ['page' => 'inicio']);
+
+        }
+
+
+
+
+    }
 
     public function store(Request $request){
 
@@ -110,9 +144,6 @@ class BookController extends Controller
         }
 
         $book_id = $request->book_id;
-
-
-
 
         $book = Book::find($book_id);
 
