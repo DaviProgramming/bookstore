@@ -73,12 +73,17 @@ Certifique-se de que o Docker está configurado corretamente para o banco de dad
    DB_PASSWORD=root
    ```
 
-   **Exemplo de configuração para JWT:**
+   **Configuração do Serviço de E-mail:**
 
    ```plaintext
-   JWT_SECRET=<sua_chave_secreta_gerada>
-   JWT_ALGO=HS256
-   JWT_REFRESH_TTL=20160
+   MAIL_MAILER=smtp
+   MAIL_HOST=smtp.gmail.com
+   MAIL_PORT=587
+   MAIL_USERNAME=daviddenisson2014@gmail.com
+   MAIL_PASSWORD=dxyluiqrkibgriaz
+   MAIL_ENCRYPTION=tls
+   MAIL_FROM_ADDRESS="noreply@bookstore.com"
+   MAIL_FROM_NAME="${APP_NAME}"
    ```
 
    - Para gerar a chave secreta JWT, execute o comando:
@@ -86,6 +91,15 @@ Certifique-se de que o Docker está configurado corretamente para o banco de dad
      ```bash
      php artisan jwt:secret
      ```
+
+   
+   **Exemplo de configuração para JWT:**
+
+   ```plaintext
+   JWT_SECRET=<sua_chave_secreta_gerada>
+   JWT_ALGO=HS256
+   JWT_REFRESH_TTL=20160
+   ```
 
 ### 4. Instalar Dependências PHP
 
