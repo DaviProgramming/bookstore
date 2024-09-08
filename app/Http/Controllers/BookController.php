@@ -270,7 +270,6 @@ class BookController extends Controller
     }
 
 
-
     protected function ensureDirectoriesExist() // funcao que garante que os diretorios existam 
     {
         $directories = [

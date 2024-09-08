@@ -42,6 +42,10 @@
     @elseif($page == 'editar')
 
     @include('./components/dashboard/editar-livro')
+
+    @elseif($page == 'favoritos')
+
+    @include('./components/dashboard/favoritos')
         
     @endif
 
