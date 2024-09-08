@@ -5,9 +5,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+
+
+
 class RefreshToken
 {
     /**
@@ -38,9 +42,14 @@ class RefreshToken
     
             } catch (JWTException $e) {
                 // Caso o token não possa ser atualizado, redirecione para a página de login
-                return redirect()->route('pagina.login');
+
+
+                Session::flush();
 
                 Log::error('JWTException: ' . $e->getMessage());
+
+                return redirect()->route('pagina.login');
+
 
             }
 

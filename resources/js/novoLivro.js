@@ -11,6 +11,7 @@ const listeners = () => {
         'button[name="button-enviar-book"]'
     );
 
+
     if(buttonEnviar != null){
 
         buttonEnviar.addEventListener("click", (e) => {
@@ -20,7 +21,20 @@ const listeners = () => {
 
     }
 
+    const buttonEditar = document.querySelector('button[name="button-editar-book"]');
+
+    if(buttonEditar != null){
+
+        buttonEditar.addEventListener('click', (e) => {
+
+            formActions.clickedButton(e.target);
+
+        })
+
+    }
+
     const buttonChangeThumbnail = document.querySelector('button[name="button-thumbnail"]');
+    
 
     if(buttonChangeThumbnail != null){
         buttonChangeThumbnail.addEventListener('click', (e) => {
@@ -355,7 +369,7 @@ const formActions = {
 
     },
 
-    verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanTitulo, spanDescricao, spanImagem){
+    verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanTitulo, spanDescricao, spanImagem, tipoButton){
 
         let erro = 0;
 
@@ -372,6 +386,7 @@ const formActions = {
 
 
         }
+
 
         if(validations.descricaoBook(textareaDescricao.value).status != true){
 
@@ -390,18 +405,42 @@ const formActions = {
         }
 
 
-        if(thumbNail.changeInput(modifyInputToObject) != true){
+        if(tipoButton == 'button-editar-book'){
 
-            erro++;
-            spanErrosActions.activeSpan(spanImagem);
 
-        }else{
+            if(inputImagem.files.length >= 1){
 
-            spanErrosActions.disableSpan(spanImagem);
+
+                if(thumbNail.changeInput(modifyInputToObject) != true){
+
+                    erro++;
+                    spanErrosActions.activeSpan(spanImagem);
+        
+                }else{
+        
+                    spanErrosActions.disableSpan(spanImagem);
+        
+                }
+
+            }
+
+        }else if(tipoButton == 'button-enviar-book'){
+
+            if(thumbNail.changeInput(modifyInputToObject) != true){
+
+                erro++;
+                spanErrosActions.activeSpan(spanImagem);
+    
+            }else{
+    
+                spanErrosActions.disableSpan(spanImagem);
+    
+            }
 
         }
 
 
+    
         if(erro == 0){
 
             return true;
@@ -418,17 +457,104 @@ const formActions = {
     clickedButton(button){
 
         let {inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem} = this.getInputsAndSpans();
+
+        let tipoButton = button.name;
+
+        if(tipoButton == null){
+
+            tipoButton = button.parentNode.name;
+                
+        }
         
 
-        if(this.verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem) == true){
+        if(this.verifyInputs(inputTitulo, textareaDescricao, inputImagem, spanErroTitulo, spanErroDescricao, spanErroImagem, tipoButton) == true){
 
-            loadingActions.activeLoading();
+            if(tipoButton == 'button-editar-book'){
 
-            this.tryRegisterNewBook(inputTitulo.value, textareaDescricao.value, inputImagem.files[0]);
+                loadingActions.activeLoading();
+
+                this.tryEditNewBook(inputTitulo.value, textareaDescricao.value, inputImagem.files[0]);
+
+
+            }else if(tipoButton == 'button-enviar-book'){
+
+                loadingActions.activeLoading();
+                this.tryRegisterNewBook(inputTitulo.value, textareaDescricao.value, inputImagem.files[0]);
+    
+
+            }
 
         } 
 
 
+    },
+
+    tryEditNewBook(titulo, descricao, imagem){
+
+        let bookId = document.querySelector('input[name="book_id"]').value;
+
+        let formData = new FormData();
+
+        formData.append('titulo', titulo);
+        formData.append('descricao', descricao);
+
+        if(imagem != null){
+            
+            formData.append('imagem', imagem);
+
+        }
+        formData.append('book_id', bookId);
+        formData.append('_method', 'PUT');
+
+        $.ajax({
+
+            url: "/book/editar-livro",
+            data: formData,
+            type: 'POST',
+            processData: false, 
+            contentType: false, 
+            success: (response) => {
+                console.log(response);
+                swal.fire({
+                    icon:'success',
+                    title:response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+                    // window.location.href = '/dashboard/inicio';
+
+                }, 1500)
+                
+
+            },
+
+            error: (xhr, status, erro) => {
+
+
+                console.log(xhr.responseJSON.message)
+
+                swal.fire({
+                    title: xhr.responseJSON.message,
+                    showConfirmButton: false,
+                    icon: 'error',
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+
+
+                }, 1500)
+
+            }
+
+
+        })
     },
 
     tryRegisterNewBook(titulo, descricao, imagem){

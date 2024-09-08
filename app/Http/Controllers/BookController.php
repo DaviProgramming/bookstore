@@ -13,66 +13,58 @@ use Exception;
 
 class BookController extends Controller
 {
-    public function index($page = null){
+    public function index($page = null)
+    {
 
         try {
 
             $token = session('jwt_token');
-    
+
             $user = JWTAuth::setToken($token)->authenticate();
             $all_books = Book::all();
-
         } catch (JWTException $e) {
 
             Log::error('JWTException: ' . $e->getMessage());
 
             session()->forget('jwt_token');
-           
-            return redirect()->route('pagina.login');
 
+            return redirect()->route('pagina.login');
         }
 
         return view('pages.dashboard')->with(['user' => $user, 'page' => $page, 'books' => $all_books]);
-
     }
 
-    public function showEditForm($id){
+    public function showEditForm($id)
+    {
 
         try {
 
             $token = session('jwt_token');
-    
-            $user = JWTAuth::setToken($token)->authenticate();
 
+            $user = JWTAuth::setToken($token)->authenticate();
         } catch (JWTException $e) {
 
             Log::error('JWTException: ' . $e->getMessage());
 
             session()->forget('jwt_token');
-           
-            return redirect()->route('pagina.login');
 
+            return redirect()->route('pagina.login');
         }
 
         $book = Book::find($id);
 
 
-        if($book){
+        if ($book) {
 
-         return view('pages.dashboard')->with(['page' => 'editar', 'book' => $book, 'user' => $user]);
-
-        }else{
+            return view('pages.dashboard')->with(['page' => 'editar', 'book' => $book, 'user' => $user]);
+        } else {
 
             return redirect()->route('pagina.dashboard', ['page' => 'inicio']);
-
         }
-
-
-
-
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
 
         $valida = Validator::make($request->all(), [
@@ -85,7 +77,7 @@ class BookController extends Controller
 
             $erros = $valida->messages(); // captura o erro
 
-            return response()->json(['status' => 'error' , 'message' => $erros], 404); // se a validacao falhar, retorno um erro
+            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
 
         }
 
@@ -96,50 +88,109 @@ class BookController extends Controller
         $this->ensureDirectoriesExist();
 
 
-        try{
+        try {
 
-        $pathImagem = $imagem->store('thumbnail', 'public');
+            $pathImagem = $imagem->store('thumbnail', 'public');
 
-        $token = session('jwt_token');
-    
-        $user = JWTAuth::setToken($token)->authenticate();
+            $token = session('jwt_token');
 
-        $livro = new Book([
-            'title' => $titulo,
-            'description' => $descricao,
-            'image_path' => $pathImagem,
-        ]);
+            $user = JWTAuth::setToken($token)->authenticate();
 
-        $livro->creator()->associate($user);
+            $livro = new Book([
+                'title' => $titulo,
+                'description' => $descricao,
+                'image_path' => $pathImagem,
+            ]);
 
-        $livro->save();
+            $livro->creator()->associate($user);
 
-        return response()->json(['status' => 'success', 'message' => 'Livro criado com sucesso', 'content' => $livro, 201]);
+            $livro->save();
 
-        }catch(Exception $e){
-
-
-            return response()->json(['status' => 'error', 'message' => $e->getMessage() , 401]);
+            return response()->json(['status' => 'success', 'message' => 'Livro criado com sucesso', 'content' => $livro, 201]);
+        } catch (Exception $e) {
 
 
+            return response()->json(['status' => 'error', 'message' => $e->getMessage(), 401]);
         }
-
-        
-
     }
 
-    public function delete(Request $request){
+    public function edit(Request $request)
+    {
+
 
         $valida = Validator::make($request->all(), [
-            'book_id' => 'required|integer|exists:books,id' , // verifica se n está vazio e se é um integer
+            'titulo' => 'required|string|min:3', // verifica se é uma string e tem no minimo 3 caracteres
+            'descricao' => 'required|string|min:10', // verifica se é uma string e tem no minimo 10 caracteres
+            'imagem' => 'nullable|mimes:jpg,jpeg,png|max:3072', // Aceita apenas PNG, JPG, JPEG com limite de 3 MB
+            'book_id' => 'required|integer|exists:books,id', // Verifica se n está vazio e se é um integer
         ]);
-        
 
         if ($valida->fails()) {
 
             $erros = $valida->messages(); // captura o erro
 
-            return response()->json(['status' => 'error' , 'message' => $erros], 404); // se a validacao falhar, retorno um erro
+            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
+
+        }
+
+        $titulo = $request->titulo;
+        $descricao = $request->descricao;
+        $imagem = $request->file('imagem');
+        $book_id = $request->book_id;
+
+        $book = Book::find($book_id);
+
+        if($book){
+
+            try{
+
+                $book->title = $titulo;
+                $book->description = $descricao;
+    
+                if ($imagem) {
+    
+                    // Remove a imagem antiga, se existir
+                    if (Storage::disk('public')->exists($book->image_path)) {
+                        Storage::disk('public')->delete($book->image_path);
+                    }
+        
+                    // Armazena a nova imagem e atualiza o path
+                    $pathImagem = $imagem->store('thumbnail', 'public');
+                    $book->image_path = $pathImagem;
+                }
+    
+                $book->save();
+    
+                return response()->json(['status' => 'success', 'message' => 'Livro atualizado com sucesso!']);
+
+                
+            }catch(Exception $e){
+
+                return response()->json(['status' => 'error', 'message' => $e->getMessage()], 404);
+
+
+            }
+
+        }
+
+        
+
+         return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
+    }
+
+    public function delete(Request $request)
+    {
+
+        $valida = Validator::make($request->all(), [
+            'book_id' => 'required|integer|exists:books,id', // verifica se n está vazio e se é um integer
+        ]);
+
+
+        if ($valida->fails()) {
+
+            $erros = $valida->messages(); // captura o erro
+
+            return response()->json(['status' => 'error', 'message' => $erros], 404); // se a validacao falhar, retorno um erro
 
         }
 
@@ -148,7 +199,7 @@ class BookController extends Controller
         $book = Book::find($book_id);
 
 
-        if($book){
+        if ($book) {
 
             if (Storage::disk('public')->exists($book['image_path'])) {
                 Storage::disk('public')->delete($book['image_path']);
@@ -158,19 +209,13 @@ class BookController extends Controller
 
 
             return response()->json(['status' => 'success', 'message' => 'Livro excluido com sucesso', 201]);
-            
-        }else {
+        } else {
 
             return response()->json([
                 'status' => 'error',
                 'message' => 'Livro não encontrado!'
             ], 404);
         }
-
-
-
-
-
     }
 
 

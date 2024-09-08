@@ -22,6 +22,7 @@
         </div>
         <div class="book-form">
             <div class="book-form-content">
+                <input type="number" value="{{$book->id}}" name="book_id" hidden>
                 <div class="book-form-content-input-group">
                     <input type="text" value="{{$book->title}}" id="title-new-book-input" name="titulo-input" placeholder="Titulo" maxlength="100">
                 </div>

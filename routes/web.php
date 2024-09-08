@@ -12,7 +12,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Middleware\VerificaLogado;
 use App\Http\Middleware\VerificaNaoLogado;
 
-use App\Http\Middleware\RefreshToken;
 
 Route::get('/', [LoginController::class, 'index'])->middleware(VerificaNaoLogado::class)->name('pagina.login');
 Route::get('/cadastro', [UserController::class, 'create'])->middleware(VerificaNaoLogado::class)->name('pagina.cadastro');
