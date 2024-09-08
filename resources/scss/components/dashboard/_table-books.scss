@@ -91,6 +91,27 @@
                     }
 
                 }
+
+
+                &.favorite{
+
+                    &:hover{
+                        background: $cinza;
+                        color: #FABC3F;
+                    }
+
+                }
+
+                &.favorited{
+
+                    color: #FABC3F;
+
+                    &:hover{
+                        color: #faede2;
+                        background: $preto;
+                    }
+
+                }
             }
         }
     }

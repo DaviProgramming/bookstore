@@ -22,6 +22,7 @@ class BookController extends Controller
 
             $user = JWTAuth::setToken($token)->authenticate();
             $all_books = Book::all();
+            $favorited_books = $user->favoritedBooks->pluck('id');
         } catch (JWTException $e) {
 
             Log::error('JWTException: ' . $e->getMessage());
@@ -31,7 +32,7 @@ class BookController extends Controller
             return redirect()->route('pagina.login');
         }
 
-        return view('pages.dashboard')->with(['user' => $user, 'page' => $page, 'books' => $all_books]);
+        return view('pages.dashboard')->with(['user' => $user, 'page' => $page, 'books' => $all_books, 'favorited_books' => $favorited_books]);
     }
 
     public function showEditForm($id)
@@ -178,9 +179,29 @@ class BookController extends Controller
          return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
     }
 
-    public function favorite(Request $request, $book_id){
+    public function favorite(Request $request){
 
+        $token = session('jwt_token');
+        $user = JWTAuth::setToken($token)->authenticate();
 
+        $book_id = $request->input('book_id'); 
+
+        // Verifica se o livro e o usuarío existe
+        $book = Book::find($book_id);
+        
+        if (!$book || !$user) {
+            return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
+        }
+    
+        // Verifica se o livro já foi favoritado pelo usuário
+        if ($user->favoritedBooks()->where('book_id', $book_id)->exists()) {
+            return response()->json(['status' => 'error', 'message' => 'Você já favoritou este livro'], 400);
+        }
+    
+        // Adiciona o livro aos favoritos do usuário
+        $user->favoritedBooks()->attach($book_id);
+    
+        return response()->json(['status' => 'success', 'message' => 'Livro favoritado com sucesso!']);
 
     }
 

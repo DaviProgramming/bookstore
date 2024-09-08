@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
 
-    public function favoriteBooks(): BelongsToMany
+    public function favoritedBooks(): BelongsToMany
     {
         return $this->belongsToMany(Book::class, 'book_user')->withTimestamps();
     }

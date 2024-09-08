@@ -21,27 +21,35 @@
     
                     @if (!empty($books) && count($books) >= 1)
     
-                        @foreach ($books as $book)
-    
-                            <tr>
-                                <th scope="row">{{$book->id}}</th>
-                                <td class="table-titulo"><div class="table-titulo-container">{{$book->title}}</div></td>
-                                <td class="table-image"> <div class="table-image-container"><img src="{{ Storage::url($book->image_path) }}" alt="{{ $book->title }}"></div> </td>
-                                <td class="table-descricao"><div class="table-descricao-container">{{$book->description}}</div></td>
-                                <td class="table-acoes">
-                                    <div class="table-acoes-container">
-                                        <a href="{{route('pagina.edit-livro', ['id' => $book->id])}}" class="table-acoes-container-icon edit" data-book-set="{{$book->id}}">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                        <div class="table-acoes-container-icon delete" data-book-set="{{$book->id}}">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </div>
-                                    </div>
-                                    
-                                </td>
-                            </tr>
-                        
-                        @endforeach
+                    @foreach ($books as $book)
+                    <tr>
+                        <th scope="row">{{$book->id}}</th>
+                        <td class="table-titulo"><div class="table-titulo-container">{{$book->title}}</div></td>
+                        <td class="table-image"> 
+                            <div class="table-image-container">
+                                <img src="{{ Storage::url($book->image_path) }}" alt="{{ $book->title }}">
+                            </div> 
+                        </td>
+                        <td class="table-descricao">
+                            <div class="table-descricao-container">{{$book->description}}</div>
+                        </td>
+                        <td class="table-acoes">
+                            <div class="table-acoes-container">
+                                <div class="table-acoes-container-icon <?php if($favorited_books->contains($book->id)) echo 'favorited'; else echo 'favorite'; ?>"><i class="fa-solid fa-star"></i>
+                                </div>
+                                <a href="{{ route('pagina.edit-livro', ['id' => $book->id]) }}" 
+                                   class="table-acoes-container-icon edit" 
+                                   data-book-set="{{$book->id}}">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <div class="table-acoes-container-icon delete" 
+                                     data-book-set="{{$book->id}}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
     
     
                     @else

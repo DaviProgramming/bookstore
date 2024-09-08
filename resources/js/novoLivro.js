@@ -95,6 +95,40 @@ const listeners = () => {
 
     }
 
+    const getAllFavoriteButtons = document.querySelectorAll('.table-acoes-container-icon.favorite');
+
+    if(getAllFavoriteButtons != null){
+
+
+        getAllFavoriteButtons.forEach(favoriteButton => {
+
+
+            favoriteButton.addEventListener('click', (e) => {
+
+                let elementoClicado = e.target;
+
+                let id = elementoClicado.dataset.bookSet;
+
+                if(id != null){
+
+                    dashboardButtonsActions.favoriteClick(id);
+
+                }else {
+
+                    elementoClicado = elementoClicado.parentNode;
+
+                    id = elementoClicado.dataset.bookSet;
+
+                    dashboardButtonsActions.favoriteClick(id);
+
+                }
+
+            })
+
+        })
+
+    }
+
     
 };
 
@@ -158,6 +192,57 @@ const dashboardButtonsActions = {
             } 
           });
 
+
+    },
+
+    favoriteClick(id){
+
+        $.ajax({
+
+            url: "/book/favoritar",
+            type:"POST",
+            data:{
+                book_id: id
+            },
+            success: (response) => {
+
+                swal.fire({
+                    icon:'success',
+                    title:response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+                    window.location.reload();
+
+                }, 1500)
+
+            },
+            error(xhr, status, error){
+
+                console.log(xhr.responseJSON.message)
+
+                    swal.fire({
+                        title: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        icon: 'error',
+                        timer: 1500,
+                    })
+    
+                    setTimeout(() => {
+    
+                        loadingActions.disableLoading();
+    
+    
+                    }, 1500)
+
+                
+            }
+
+        })
 
     }
 
