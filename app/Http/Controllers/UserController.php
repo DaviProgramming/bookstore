@@ -9,14 +9,22 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-
+use App\Services\UserService;
 use App\Models\User;
 
 class UserController extends Controller
 {
+
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
+    
     public function create(){
 
         $page = 'cadastro';
@@ -25,74 +33,27 @@ class UserController extends Controller
 
     }
 
-    public function store(Request $request){
-
+    public function store(Request $request)
+    {
         $valida = Validator::make($request->all(), [
-            'password' => 'required|string|min:5', // Senha deve ser uma string com pelo menos 8 caracteres
-            'name' => 'required|string', // Nome deve ser uma string não vazia
-            'email' => 'required|email', // verifica se este é um email valido
+            'password' => 'required|string|min:5',
+            'name' => 'required|string',
+            'email' => 'required|email',
         ]);
 
         if ($valida->fails()) {
-
-            // se o verificador falha, retorno o erro
-
-            return response()->json(['status' => 'error' , 'message' => 'dados invalídos'], 404); // se a validacao falhar, retorno um erro
-
+            return response()->json(['status' => 'error', 'message' => 'Dados inválidos'], 404);
         }
 
-        $email = $request->email;
-        $name = $request->name;
-        $password = $request->password;
+        $data = $request->only('email', 'name', 'password');
 
-        //verifico se já existe um usuário com este email
-        
-        $usuarioExistente = User::where('email', $email)->first();
+        $result = $this->userService->registerUser($data);
 
-        if($usuarioExistente){
-
-            return response()->json([
-                'message' => 'O email já está em uso',
-                'status' => 'error'
-            ], 404);
-
-        }
-
-        //após a verificação eu crio o novo usuário
-
-        $user = User::create(['email' => $request->email, 'name' => $name, 'password' => hash::make($password)]);
-
-        if ($user) {
-            // Gera um token JWT para o usuário recém-criado
-            $token = JWTAuth::attempt($request->only('email', 'password'));
-    
-            if ($token) {
-
-                session(['jwt_token' => $token]);
-
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Usuário criado!',
-                    'token' => $token // Retorna o token JWT
-                ], 201); // Código de status 201 para recurso criado
-
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Usuário criado, mas falha ao gerar o token. Tente novamente.'
-                ], 500); // Código de status 500 para erro interno do servidor
-            }
+        if ($result['status'] === 'success') {
+            session(['jwt_token' => $result['token']]);
+            return response()->json(['status' => 'success', 'message' => $result['message'], 'token' => $result['token']], 201);
         } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Não foi possível criar o usuário'
-            ], 500); // Código de status 500 para erro interno do servidor
+            return response()->json(['status' => $result['status'], 'message' => $result['message']], 404);
         }
-
-
-        
-
-        
-
     }
 }
