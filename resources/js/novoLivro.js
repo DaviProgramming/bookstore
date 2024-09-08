@@ -499,7 +499,7 @@ const formActions = {
         formData.append('descricao', descricao);
 
         if(imagem != null){
-            
+
             formData.append('imagem', imagem);
 
         }
@@ -514,7 +514,6 @@ const formActions = {
             processData: false, 
             contentType: false, 
             success: (response) => {
-                console.log(response);
                 swal.fire({
                     icon:'success',
                     title:response.message,
@@ -525,7 +524,7 @@ const formActions = {
                 setTimeout(() => {
 
                     loadingActions.disableLoading();
-                    // window.location.href = '/dashboard/inicio';
+                    window.location.href = '/dashboard/inicio';
 
                 }, 1500)
                 
@@ -535,7 +534,6 @@ const formActions = {
             error: (xhr, status, erro) => {
 
 
-                console.log(xhr.responseJSON.message)
 
                 swal.fire({
                     title: xhr.responseJSON.message,
