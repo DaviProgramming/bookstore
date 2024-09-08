@@ -129,6 +129,41 @@ const listeners = () => {
 
     }
 
+    const getAllUnfavoriteButtons = document.querySelectorAll('.table-acoes-container-icon.favorited');
+
+    if(getAllUnfavoriteButtons != null){
+
+
+        getAllUnfavoriteButtons.forEach(unfavoritedButton => {
+
+            unfavoritedButton.addEventListener('click', (e) => {
+
+
+                let elementoClicado = e.target;
+
+                let id = elementoClicado.dataset.bookSet;
+
+                if(id != null){
+
+                    dashboardButtonsActions.unfavoriteClick(id);
+
+                }else {
+
+                    elementoClicado = elementoClicado.parentNode;
+
+                    id = elementoClicado.dataset.bookSet;
+
+                    dashboardButtonsActions.unfavoriteClick(id);
+
+                }
+
+
+            })
+
+        })
+
+    }
+
     
 };
 
@@ -200,6 +235,57 @@ const dashboardButtonsActions = {
         $.ajax({
 
             url: "/book/favoritar",
+            type:"POST",
+            data:{
+                book_id: id
+            },
+            success: (response) => {
+
+                swal.fire({
+                    icon:'success',
+                    title:response.message,
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+
+                setTimeout(() => {
+
+                    loadingActions.disableLoading();
+                    window.location.reload();
+
+                }, 1500)
+
+            },
+            error(xhr, status, error){
+
+                console.log(xhr.responseJSON.message)
+
+                    swal.fire({
+                        title: xhr.responseJSON.message,
+                        showConfirmButton: false,
+                        icon: 'error',
+                        timer: 1500,
+                    })
+    
+                    setTimeout(() => {
+    
+                        loadingActions.disableLoading();
+    
+    
+                    }, 1500)
+
+                
+            }
+
+        })
+
+    },
+
+    unfavoriteClick(id){
+
+        $.ajax({
+
+            url: "/book/unfavorite",
             type:"POST",
             data:{
                 book_id: id

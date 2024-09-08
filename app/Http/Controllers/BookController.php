@@ -186,9 +186,11 @@ class BookController extends Controller
 
         $book_id = $request->input('book_id'); 
 
-        // Verifica se o livro e o usuarío existe
+        // Verifica se o livro  existe
         $book = Book::find($book_id);
         
+        // Verifica se o livro e o usuarío existe
+
         if (!$book || !$user) {
             return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
         }
@@ -202,6 +204,28 @@ class BookController extends Controller
         $user->favoritedBooks()->attach($book_id);
     
         return response()->json(['status' => 'success', 'message' => 'Livro favoritado com sucesso!']);
+
+    }
+
+    public function unfavorite(Request $request){
+
+        $token = session('jwt_token');
+        $user = JWTAuth::setToken($token)->authenticate();
+        $book_id = $request->book_id;
+
+        $book = Book::find($book_id);
+
+        if (!$book || !$user) {
+            return response()->json(['status' => 'error', 'message' => 'Livro não encontrado'], 404);
+        }
+
+        
+        if ($user->favoritedBooks->contains($book->id)) {
+                $user->favoritedBooks()->detach($book->id); // Remove o livro dos favoritos
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Livro removido com sucesso!']);
+
 
     }
 

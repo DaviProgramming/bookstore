@@ -35,7 +35,8 @@
                         </td>
                         <td class="table-acoes">
                             <div class="table-acoes-container">
-                                <div class="table-acoes-container-icon <?php if($favorited_books->contains($book->id)) echo 'favorited'; else echo 'favorite'; ?>"><i class="fa-solid fa-star"></i>
+                                <div class="table-acoes-container-icon <?php if($favorited_books->contains($book->id)) echo 'favorited'; else echo 'favorite'; ?>" data-book-set="{{$book->id}}">
+                                    <i class="fa-solid fa-star"></i>
                                 </div>
                                 <a href="{{ route('pagina.edit-livro', ['id' => $book->id]) }}" 
                                    class="table-acoes-container-icon edit" 

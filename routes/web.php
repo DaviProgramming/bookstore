@@ -28,6 +28,7 @@ Route::post('/book/novo-livro', [BookController::class, 'store'])->middleware(Ve
 Route::put('/book/editar-livro', [BookController::class, 'edit'])->middleware(VerificaLogado::class)->name('book.editar-livro'); // Rota para editar um livro existente
 Route::delete('/book/delete-livro', [BookController::class, 'delete'])->middleware(VerificaLogado::class)->name('book.delete-livro'); // Rota para deletar um livro
 Route::post('/book/favoritar', [BookController::class, 'favorite'])->middleware(VerificaLogado::class)->name('book.favorita-livro');// Rota para favoritar um livro
+Route::post('/book/unfavorite', [BookController::class, 'unfavorite'])->middleware(VerificaLogado::class)->name('book.desfavorita-livro');
 
 
 
